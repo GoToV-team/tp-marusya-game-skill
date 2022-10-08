@@ -59,7 +59,8 @@ func getDay(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(200)
-	err := json.NewEncoder(w).Encode(DayResponse{Users[id].Day})
+	v, err := json.MarshalIndent(DayResponse{Users[id].Day}, "", "\t")
+	_, err = w.Write(v)
 
 	if err != nil {
 		log.Println(err)
@@ -74,7 +75,8 @@ func getWeather(w http.ResponseWriter, r *http.Request) {
 	}
 	n := rand.Int() % len(reasons)
 	fmt.Print("Gonna work from home...", reasons[n])
-	err := json.NewEncoder(w).Encode(WeatherResponce{reasons[n], rand.Int63n(100)})
+	v, err := json.MarshalIndent(WeatherResponce{reasons[n], rand.Int63n(100)}, "", "\t")
+	_, err = w.Write(v)
 
 	if err != nil {
 		log.Println(err)
@@ -85,7 +87,8 @@ func setId(w http.ResponseWriter, r *http.Request) {
 	id := uuid.New().String()
 	Users[id] = UserInfo{Day: 1, Balance: 100}
 	w.WriteHeader(200)
-	err := json.NewEncoder(w).Encode(IdResponse{id})
+	v, err := json.MarshalIndent(IdResponse{id}, "", "\t")
+	_, err = w.Write(v)
 
 	if err != nil {
 		log.Println(err)
@@ -121,7 +124,8 @@ func calcValue(w http.ResponseWriter, r *http.Request) {
 	Users[id] = UserInfo{Users[id].Day + 1, Users[id].Balance + int64(profit)}
 
 	w.WriteHeader(200)
-	err = json.NewEncoder(w).Encode(CalcResponce{Users[id].Balance, int64(profit), Users[id].Day})
+	v, err := json.MarshalIndent(CalcResponce{Users[id].Balance, int64(profit), Users[id].Day}, "", "\t")
+	_, err = w.Write(v)
 
 	if err != nil {
 		log.Println(err)
