@@ -6,14 +6,25 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"log"
+	"math"
 	"math/rand"
 	"net/http"
 	"os"
 )
 
+const (
+	glassPrice = 10
+	icePrice   = 50
+	StandPrice = 10
+	days       = 7
+	balance    = 2000
+)
+
 type UserInfo struct {
-	Day     int64 `json:"day"`
-	Balance int64 `json:"balance"`
+	Day        int64  `json:"day"`
+	Balance    int64  `json:"balance"`
+	Weather    string `json:"weather"`
+	RainChance int64  `json:"rain_chance"`
 }
 
 type DayResponse struct {
@@ -68,14 +79,29 @@ func getDay(w http.ResponseWriter, r *http.Request) {
 }
 
 func getWeather(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		w.WriteHeader(400)
+		log.Println("getDay 400")
+		return
+	}
+
+	if _, ok := Users[id]; !ok {
+		w.WriteHeader(404)
+		log.Println("getDay 404")
+		return
+	}
+
 	reasons := []string{
 		"sunny",
 		"hot",
 		"cloudy",
 	}
 	n := rand.Int() % len(reasons)
-	fmt.Print("Gonna work from home...", reasons[n])
-	v, err := json.MarshalIndent(WeatherResponce{reasons[n], rand.Int63n(100)}, "", "\t")
+	log.Println(reasons[n])
+
+	Users[id] = UserInfo{Users[id].Day, Users[id].Balance, reasons[n], rand.Int63n(100)}
+	v, err := json.MarshalIndent(WeatherResponce{reasons[n], Users[id].RainChance}, "", "\t")
 	_, err = w.Write(v)
 
 	if err != nil {
@@ -85,7 +111,7 @@ func getWeather(w http.ResponseWriter, r *http.Request) {
 
 func setId(w http.ResponseWriter, r *http.Request) {
 	id := uuid.New().String()
-	Users[id] = UserInfo{Day: 1, Balance: 100}
+	Users[id] = UserInfo{Day: 1, Balance: balance}
 	w.WriteHeader(200)
 	v, err := json.MarshalIndent(IdResponse{id}, "", "\t")
 	_, err = w.Write(v)
@@ -109,6 +135,8 @@ func calcValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/*body, _ := io.ReadAll(r.Body)
+	println(string(body))*/
 	req := CalcRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -117,20 +145,67 @@ func calcValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	profit := rand.Float64() * float64(req.CupsAmount) * float64(req.Price)
+	users := int64(100)
 
-	profit *= rand.Float64()
+	coef := 0.0
 
-	Users[id] = UserInfo{Users[id].Day + 1, Users[id].Balance + int64(profit)}
+	if Users[id].Weather == "hot" {
+		if req.IceAmount < 4 {
+			users = users / (4 - req.IceAmount)
+		} else {
+			users = int64(float64(users) * 1.5)
+		}
+	}
+
+	if Users[id].Weather == "sunny" {
+		if req.IceAmount < 2 {
+			users = users / (2 - req.IceAmount)
+		} else if req.IceAmount <= 4 {
+			users = int64(float64(users) * 1.5)
+		} else {
+			users = int64(float64(users) * 0.5)
+		}
+	}
+
+	if Users[id].Weather == "cloudy" {
+		if rand.Int63n(100) < Users[id].RainChance {
+			if req.IceAmount == 0 {
+				users = users
+			} else {
+				users = int64(float64(users) * 0.5)
+			}
+		} else {
+			if req.IceAmount == 0 {
+				users = int64(float64(users) / 1.5)
+			} else if req.IceAmount <= 2 {
+				users = int64(float64(users) * 1.5)
+			} else {
+				users = int64(float64(users) * 0.5)
+			}
+		}
+	}
+
+	if req.StandAmount > rand.Int63n(20*3)/2 {
+		coef *= 2
+	} else {
+		coef /= 2
+	}
+
+	coef += rand.Float64()
+
+	profit := int64(math.Min(float64(users), float64(req.CupsAmount))*float64(req.Price)) -
+		glassPrice*req.CupsAmount - icePrice*req.IceAmount - StandPrice*req.StandAmount
+
+	Users[id] = UserInfo{Users[id].Day + 1, Users[id].Balance + profit, "", 0}
 
 	w.WriteHeader(200)
-	v, err := json.MarshalIndent(CalcResponce{Users[id].Balance, int64(profit), Users[id].Day}, "", "\t")
+	v, err := json.MarshalIndent(CalcResponce{Users[id].Balance, profit, Users[id].Day}, "", "\t")
 	_, err = w.Write(v)
 
 	if err != nil {
 		log.Println(err)
 	}
-	if Users[id].Day == 7 {
+	if Users[id].Day == days {
 		delete(Users, id)
 	}
 }
