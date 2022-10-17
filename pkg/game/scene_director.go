@@ -1,73 +1,62 @@
 package game
 
 import (
-	"encoding/json"
+	"context"
 	"github.com/evrone/go-clean-template/pkg/game/scene"
 	"github.com/evrone/go-clean-template/pkg/marusia"
 	"github.com/evrone/go-clean-template/pkg/stack"
 	"strings"
 )
 
-type Operator interface {
-	RunScene(command string, fullUserMessage string, payload json.RawMessage) Answer
+type Director interface {
+	PlayScene(command SceneRequest) Result
 }
 
-type Answer struct {
-	Text          scene.Text
-	Buttons       []scene.Button
-	IsEndOfScript bool
-}
-
-type SceneOperatorConfig struct {
-	StartScene   scene.Scene
-	ErrorScene   scene.Scene
-	GoodbyeScene scene.Scene
-	EndCommand   string
-}
-
-type SceneOperator struct {
+type ScriptDirector struct {
 	stashedScene  stack.Stack[scene.Scene]
 	currentScene  scene.Scene
 	isEndOfScript bool
-
-	cf SceneOperatorConfig
+	ctx           context.Context
+	cf            SceneDirectorConfig
 }
 
-func NewSceneOperator(cf SceneOperatorConfig) *SceneOperator {
-	return &SceneOperator{
+func NewScriptDirector(cf SceneDirectorConfig) *ScriptDirector {
+	return &ScriptDirector{
 		stashedScene:  stack.NewStack[scene.Scene](),
 		cf:            cf,
 		currentScene:  nil,
+		ctx:           context.Background(),
 		isEndOfScript: false,
 	}
 }
 
-func (so *SceneOperator) RunScene(command string, fullUserMessage string, payload json.RawMessage) Answer {
+func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 	errCmd := scene.NoCommand
-	switch strings.ToLower(command) {
+	switch strings.ToLower(req.Command) {
 	case marusia.OnStart, "debug":
 		so.currentScene = so.cf.StartScene
 		break
 	case marusia.OnInterrupt, strings.ToLower(so.cf.EndCommand):
 		so.stashedScene.Push(so.currentScene)
-		so.currentScene, _ = so.cf.GoodbyeScene.React(command, fullUserMessage, payload)
+		so.currentScene, _ = so.cf.GoodbyeScene.React(req.toSceneContext(so.ctx))
 		break
 	default:
-		cmd := so.matchCommands(command, so.currentScene.GetSceneInfo().ExpectedMessages)
+		cmd := so.matchCommands(req.Command, so.currentScene.GetSceneInfo().ExpectedMessages)
 		if cmd != "" {
+			req.Command = cmd
 			var sceneCmd scene.Command
-			so.currentScene, sceneCmd = so.currentScene.React(cmd, fullUserMessage, payload)
+			so.currentScene, sceneCmd = so.currentScene.React(req.toSceneContext(so.ctx))
 			so.reactSceneCommand(sceneCmd)
 		} else {
 			so.stashedScene.Push(so.currentScene)
-			so.currentScene, errCmd = so.cf.ErrorScene.React(command, fullUserMessage, payload)
+			so.currentScene, errCmd = so.cf.ErrorScene.React(req.toSceneContext(so.ctx))
 		}
 		break
 	}
 
 	info := scene.Info{}
 	if so.isEndOfScript {
-		info = scene.Info{Text: scene.Text{BaseText: "Пока!", TextToSpeech: "Пока"}}
+		info = scene.Info{Text: so.cf.GoodbyeMessage}
 	} else {
 		info = so.currentScene.GetSceneInfo()
 		if errCmd == scene.ApplyStashedScene && !so.stashedScene.Empty() {
@@ -75,14 +64,15 @@ func (so *SceneOperator) RunScene(command string, fullUserMessage string, payloa
 		}
 		info.Buttons = append(info.Buttons, scene.Button{Title: so.cf.EndCommand})
 	}
-	return Answer{
+
+	return Result{
 		Text:          info.Text,
 		Buttons:       info.Buttons,
 		IsEndOfScript: so.isEndOfScript,
 	}
 }
 
-func (so *SceneOperator) reactSceneCommand(command scene.Command) {
+func (so *ScriptDirector) reactSceneCommand(command scene.Command) {
 	switch command {
 	case scene.ApplyStashedScene:
 		if !so.stashedScene.Empty() {
@@ -95,7 +85,7 @@ func (so *SceneOperator) reactSceneCommand(command scene.Command) {
 	}
 }
 
-func (so *SceneOperator) matchCommands(command string, commands []string) string {
+func (so *ScriptDirector) matchCommands(command string, commands []string) string {
 	for _, cmd := range commands {
 		if cmd == "*" {
 			return command

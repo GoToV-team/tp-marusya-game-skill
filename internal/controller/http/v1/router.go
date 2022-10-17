@@ -19,7 +19,7 @@ import (
 // @version     1.0
 // @host        localhost:8080
 // @BasePath    /v1
-func NewRouter(handler *gin.Engine, l logger.Interface, op game.Operator) {
+func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorConfig, hub *game.ScriptHub) {
 	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -37,6 +37,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, op game.Operator) {
 	// Routers
 	h := handler.Group("/v1")
 	{
-		newLemonadeSkillRoute(h, op, l)
+		newLemonadeSkillRoute(h, op, hub, l)
 	}
 }

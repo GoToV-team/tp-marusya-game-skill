@@ -2,7 +2,6 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/evrone/go-clean-template/pkg/game"
 	"github.com/evrone/go-clean-template/pkg/game/scene"
@@ -22,9 +21,9 @@ type GameScene struct {
 	userText string
 }
 
-func (gs *GameScene) React(_ string, text string, _ json.RawMessage) (scene.Scene, scene.Command) {
+func (gs *GameScene) React(ctx *scene.Context) (scene.Scene, scene.Command) {
 	return &GameScene{
-		text,
+		ctx.Request.SearchedMessage,
 	}, scene.NoCommand
 }
 
@@ -40,8 +39,8 @@ func (gs *GameScene) GetSceneInfo() scene.Info {
 
 type StartScene struct{}
 
-func (ss *StartScene) React(command string, _ string, _ json.RawMessage) (scene.Scene, scene.Command) {
-	return &GameScene{command}, scene.NoCommand
+func (ss *StartScene) React(ctx *scene.Context) (scene.Scene, scene.Command) {
+	return &GameScene{ctx.Request.SearchedMessage}, scene.NoCommand
 }
 
 func (ss *StartScene) GetSceneInfo() scene.Info {
@@ -56,7 +55,7 @@ func (ss *StartScene) GetSceneInfo() scene.Info {
 
 type InitGoodByeScene struct{}
 
-func (igs *InitGoodByeScene) React(_ string, _ string, _ json.RawMessage) (scene.Scene, scene.Command) {
+func (igs *InitGoodByeScene) React(_ *scene.Context) (scene.Scene, scene.Command) {
 	return &GoodByeScene{}, scene.NoCommand
 }
 
@@ -71,8 +70,8 @@ type ErrorScene struct {
 	userText string
 }
 
-func (es *ErrorScene) React(command string, _ string, _ json.RawMessage) (scene.Scene, scene.Command) {
-	return &ErrorScene{command}, scene.ApplyStashedScene
+func (es *ErrorScene) React(ctx *scene.Context) (scene.Scene, scene.Command) {
+	return &ErrorScene{ctx.Request.SearchedMessage}, scene.ApplyStashedScene
 }
 
 func (es *ErrorScene) GetSceneInfo() scene.Info {
@@ -84,8 +83,8 @@ func (es *ErrorScene) GetSceneInfo() scene.Info {
 
 type GoodByeScene struct{}
 
-func (gs *GoodByeScene) React(command string, _ string, _ json.RawMessage) (scene.Scene, scene.Command) {
-	if command == "Точно" {
+func (gs *GoodByeScene) React(ctx *scene.Context) (scene.Scene, scene.Command) {
+	if ctx.Request.SearchedMessage == "Точно" {
 		return nil, scene.FinishScene
 	}
 	return nil, scene.ApplyStashedScene
@@ -140,20 +139,28 @@ func Run(cfg *config.Config) {
 	corsConfig.AllowOrigins = []string{"http://localhost", "https://skill-debugger.marusia.mail.ru"}
 	corsConfig.AllowMethods = []string{"POST"}
 
-	gameOperator := game.NewSceneOperator(game.SceneOperatorConfig{
+	gameDirectorConfig := game.SceneDirectorConfig{
 		EndCommand:   "Пока",
 		StartScene:   &StartScene{},
 		ErrorScene:   &ErrorScene{},
 		GoodbyeScene: &InitGoodByeScene{},
-	})
+		GoodbyeMessage: scene.Text{
+			"Пока!",
+			"Пока!",
+		},
+	}
+
+	hub := game.NewHub()
 
 	handler.Use(cors.New(corsConfig))
-	v1.NewRouter(handler, l, gameOperator)
+	v1.NewRouter(handler, l, gameDirectorConfig, hub)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+
+	go hub.Run()
 
 	select {
 	case s := <-interrupt:
@@ -163,6 +170,8 @@ func Run(cfg *config.Config) {
 		//case err = <-rmqServer.Notify():
 		//	l.Error(fmt.Errorf("app - Run - rmqServer.Notify: %w", err))
 	}
+
+	hub.StopHub()
 
 	// Shutdown
 	err := httpServer.Shutdown()

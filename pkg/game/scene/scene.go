@@ -1,7 +1,5 @@
 package scene
 
-import "encoding/json"
-
 type Command uint64
 
 const (
@@ -29,5 +27,5 @@ type Info struct {
 
 type Scene interface {
 	GetSceneInfo() Info
-	React(message string, fullUserMessage string, payload json.RawMessage) (Scene, Command)
+	React(ctx *Context) (Scene, Command)
 }
