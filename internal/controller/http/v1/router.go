@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"net/http"
 
 	// Swagger docs.
 	_ "github.com/evrone/go-clean-template/docs"
@@ -29,8 +30,10 @@ func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorCon
 	handler.GET("/swagger/*any", swaggerHandler)
 
 	//// K8s probe
-	//handler.GET("/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
-	//
+	handler.GET("/healthz", func(c *gin.Context) {
+		c.Status(http.StatusOK)
+	})
+
 	//// Prometheus metrics
 	//handler.GET("/metrics", gin.WrapH(promhttp.Handler()))
 

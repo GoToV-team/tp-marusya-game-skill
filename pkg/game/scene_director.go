@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-type Director interface {
-	PlayScene(command SceneRequest) Result
-}
-
 type ScriptDirector struct {
 	stashedScene  stack.Stack[scene.Scene]
 	currentScene  scene.Scene
@@ -31,34 +27,61 @@ func NewScriptDirector(cf SceneDirectorConfig) *ScriptDirector {
 }
 
 func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
+	ctx := req.toSceneContext(so.ctx)
+
+	sceneInfo := scene.Info{}
+	if so.currentScene != nil {
+		sceneInfo, _ = so.currentScene.GetSceneInfo(ctx)
+	}
+
 	errCmd := scene.NoCommand
+	var sceneCmd scene.Command
+
 	switch strings.ToLower(req.Command) {
 	case marusia.OnStart, "debug":
 		so.currentScene = so.cf.StartScene
-		break
+
 	case marusia.OnInterrupt, strings.ToLower(so.cf.EndCommand):
 		so.stashedScene.Push(so.currentScene)
-		so.currentScene, _ = so.cf.GoodbyeScene.React(req.toSceneContext(so.ctx))
-		break
+		sceneCmd = so.cf.GoodbyeScene.React(ctx)
+		so.currentScene = so.cf.GoodbyeScene.Next()
+		so.reactSceneCommand(sceneCmd)
+
 	default:
-		cmd := so.matchCommands(req.Command, so.currentScene.GetSceneInfo().ExpectedMessages)
+		cmd := so.matchCommands(req.Command, sceneInfo.ExpectedMessages)
 		if cmd != "" {
 			req.Command = cmd
-			var sceneCmd scene.Command
-			so.currentScene, sceneCmd = so.currentScene.React(req.toSceneContext(so.ctx))
+
+			sceneCmd = so.currentScene.React(ctx)
+			so.currentScene = so.currentScene.Next()
 			so.reactSceneCommand(sceneCmd)
 		} else {
 			so.stashedScene.Push(so.currentScene)
-			so.currentScene, errCmd = so.cf.ErrorScene.React(req.toSceneContext(so.ctx))
+			errCmd = so.cf.ErrorScene.React(ctx)
+			so.currentScene = so.cf.ErrorScene.Next()
 		}
-		break
 	}
 
 	info := scene.Info{}
+	withReact := true
 	if so.isEndOfScript {
 		info = scene.Info{Text: so.cf.GoodbyeMessage}
 	} else {
-		info = so.currentScene.GetSceneInfo()
+		info, withReact = so.currentScene.GetSceneInfo(ctx)
+		for !withReact {
+			so.currentScene = so.currentScene.Next()
+			oldInfo := info
+			info, withReact = so.currentScene.GetSceneInfo(ctx)
+			info = scene.Info{
+				Text: scene.Text{
+					BaseText:     oldInfo.Text.BaseText + "\n" + info.Text.BaseText,
+					TextToSpeech: oldInfo.Text.TextToSpeech + "\n" + info.Text.TextToSpeech,
+				},
+				Buttons:          info.Buttons,
+				ExpectedMessages: info.ExpectedMessages,
+			}
+		}
+
 		if errCmd == scene.ApplyStashedScene && !so.stashedScene.Empty() {
 			so.currentScene, _ = so.stashedScene.Pop()
 		}
@@ -85,14 +108,10 @@ func (so *ScriptDirector) reactSceneCommand(command scene.Command) {
 	}
 }
 
-func (so *ScriptDirector) matchCommands(command string, commands []string) string {
+func (so *ScriptDirector) matchCommands(command string, commands []scene.MessageMatcher) string {
 	for _, cmd := range commands {
-		if cmd == "*" {
-			return command
-		}
-
-		if strings.Contains(strings.ToLower(command), strings.ToLower(cmd)) {
-			return cmd
+		if matched, msg := cmd.Match(command); matched {
+			return msg
 		}
 	}
 	return ""

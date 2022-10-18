@@ -22,10 +22,5 @@ type Text struct {
 type Info struct {
 	Text             Text
 	Buttons          []Button
-	ExpectedMessages []string
-}
-
-type Scene interface {
-	GetSceneInfo() Info
-	React(ctx *Context) (Scene, Command)
+	ExpectedMessages []MessageMatcher
 }

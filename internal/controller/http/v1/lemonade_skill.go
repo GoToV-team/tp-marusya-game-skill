@@ -14,12 +14,13 @@ const RequestTime = 60 * time.Second
 
 type LemonadeSkillRoute struct {
 	sdc  game.SceneDirectorConfig
-	shub *game.ScriptHub
+	shub game.ScriptRunner
 	l    logger.Interface
 	wh   *marusia.Webhook
 }
 
-func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig, shub *game.ScriptHub, l logger.Interface) {
+func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
+	shub game.ScriptRunner, l logger.Interface) {
 	r := &LemonadeSkillRoute{
 		sdc:  sdc,
 		shub: shub,
@@ -28,11 +29,6 @@ func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfi
 	r.initWebhook()
 
 	handler.POST("/lemonade", r.wh.HandleFunc)
-}
-
-type myPayload struct {
-	Text string
-	marusia.DefaultPayload
 }
 
 func toMarusiaButtons(buttons []scene.Button) []marusia.Button {
@@ -50,10 +46,13 @@ func toMarusiaButtons(buttons []scene.Button) []marusia.Button {
 func (ls *LemonadeSkillRoute) initWebhook() {
 	ls.wh = marusia.NewWebhook(ls.l)
 
-	ls.wh.OnEvent(func(r marusia.Request) (resp marusia.Response) {
+	ls.wh.OnEvent(func(r marusia.Request) (resp marusia.Response, err error) {
+		err = nil
+
 		if r.Request.Command == marusia.OnStart || r.Request.Command == "debug" {
-			ls.shub.RegisterClient(game.NewClient(ls.shub, r.Session.SessionID, game.NewScriptDirector(ls.sdc)))
+			ls.shub.AttachDirector(r.Session.SessionID, game.NewScriptDirector(ls.sdc))
 		}
+
 		ans := ls.shub.RunScene(r)
 
 		ticker := time.NewTicker(RequestTime)
@@ -66,16 +65,21 @@ func (ls *LemonadeSkillRoute) initWebhook() {
 				resp.Buttons = toMarusiaButtons(answer.Buttons)
 
 				if answer.IsEndOfScript {
-					answer.WorkedClient.Close()
+					answer.WorkedDirector.Close()
 				}
+			} else {
+				err = BadDirectorAnswer
 			}
 			break
 		case <-ticker.C:
-			ls.l.Error("Too long run scene")
-			resp.Text = "Too long run scene"
+			err = TooLongRunning
 			break
 		}
 		ticker.Stop()
+
+		if err != nil {
+			ls.l.Error(err)
+		}
 		return
 	})
 }

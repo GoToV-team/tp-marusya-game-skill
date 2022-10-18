@@ -14,6 +14,7 @@ type (
 		Log  `yaml:"logger"`
 		PG   `yaml:"postgres"`
 		RMQ  `yaml:"rabbitmq"`
+		GRPC `yaml:"grpc"`
 	}
 
 	// App -.
@@ -36,6 +37,11 @@ type (
 	PG struct {
 		PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
 		URL     string `env-required:"true"                 env:"PG_URL"`
+	}
+
+	// PG -.
+	GRPC struct {
+		URL string `env-required:"true"                 env:"GRPC_URL"`
 	}
 
 	// RMQ -.

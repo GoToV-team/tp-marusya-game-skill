@@ -5,56 +5,6 @@ import (
 	"github.com/evrone/go-clean-template/pkg/marusia"
 )
 
-type ClosedClient interface {
-	Close()
-}
-
-type HubResult struct {
-	Result
-	WorkedClient ClosedClient
-}
-
-type Client struct {
-	hub      *ScriptHub
-	op       Director
-	clientId string
-}
-
-func NewClient(hub *ScriptHub, sessionId string, op Director) *Client {
-	return &Client{
-		hub:      hub,
-		clientId: sessionId,
-		op:       op,
-	}
-}
-
-func (c *Client) Close() {
-	c.hub.UnregisterClient(c)
-}
-
-func (c *Client) PlayScene(msg sceneMessage) Result {
-	res := c.op.PlayScene(SceneRequest{
-		Command:      msg.rq.command,
-		FullUserText: msg.rq.fullUserText,
-		WasButton:    msg.rq.wasButton,
-		Payload:      msg.rq.payload,
-		Info: UserInfo{
-			UserId:    msg.userId,
-			SessionId: msg.sessionId,
-		},
-	})
-
-	return res
-}
-
-type ScriptHub struct {
-	Clients    map[string]*Client
-	broadcast  chan *sceneMessage
-	register   chan *Client
-	unregister chan *Client
-	stopHub    chan bool
-}
-
 type request struct {
 	command      string
 	fullUserText string
@@ -74,30 +24,71 @@ func fromMarusiaRequest(rqm marusia.RequestIn) *request {
 type sceneMessage struct {
 	userId    string
 	sessionId string
-	answer    chan HubResult
+	answer    chan PlayedSceneResult
 	rq        request
+}
+
+type director struct {
+	hub       *ScriptHub
+	op        Director
+	sessionId string
+}
+
+func newDirector(hub *ScriptHub, sessionId string, op Director) *director {
+	return &director{
+		hub:       hub,
+		sessionId: sessionId,
+		op:        op,
+	}
+}
+
+func (c *director) Close() {
+	c.hub.detachDirector(c)
+}
+
+func (c *director) PlayScene(msg sceneMessage) Result {
+	res := c.op.PlayScene(SceneRequest{
+		Command:      msg.rq.command,
+		FullUserText: msg.rq.fullUserText,
+		WasButton:    msg.rq.wasButton,
+		Payload:      msg.rq.payload,
+		Info: UserInfo{
+			UserId:    msg.userId,
+			SessionId: msg.sessionId,
+		},
+	})
+
+	return res
+}
+
+type ScriptHub struct {
+	directors map[string]*director
+	broadcast chan *sceneMessage
+	attacher  chan *director
+	dettacher chan *director
+	stopHub   chan bool
 }
 
 func NewHub() *ScriptHub {
 	return &ScriptHub{
-		broadcast:  make(chan *sceneMessage),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		Clients:    make(map[string]*Client),
-		stopHub:    make(chan bool),
+		broadcast: make(chan *sceneMessage),
+		attacher:  make(chan *director),
+		dettacher: make(chan *director),
+		directors: make(map[string]*director),
+		stopHub:   make(chan bool),
 	}
 }
 
-func (h *ScriptHub) RegisterClient(client *Client) {
-	h.register <- client
+func (h *ScriptHub) AttachDirector(sessionId string, op Director) {
+	h.attacher <- newDirector(h, sessionId, op)
 }
 
-func (h *ScriptHub) UnregisterClient(client *Client) {
-	h.unregister <- client
+func (h *ScriptHub) detachDirector(drt *director) {
+	h.dettacher <- drt
 }
 
-func (h *ScriptHub) RunScene(rq marusia.Request) chan HubResult {
-	answer := make(chan HubResult)
+func (h *ScriptHub) RunScene(rq marusia.Request) chan PlayedSceneResult {
+	answer := make(chan PlayedSceneResult)
 	h.broadcast <- &(sceneMessage{
 		userId:    rq.Session.UserID,
 		sessionId: rq.Session.SessionID,
@@ -111,40 +102,40 @@ func (h *ScriptHub) StopHub() {
 	h.stopHub <- true
 }
 
-func (h *ScriptHub) unregisterAll() {
-	for key, _ := range h.Clients {
-		delete(h.Clients, key)
+func (h *ScriptHub) detachAll() {
+	for key, _ := range h.directors {
+		delete(h.directors, key)
 	}
 }
 
 func (h *ScriptHub) runScene(msg *sceneMessage) {
-	if client, ok := h.Clients[msg.sessionId]; ok {
-		go func(ans chan HubResult, client *Client) {
-			ans <- HubResult{
-				Result:       client.PlayScene(*msg),
-				WorkedClient: client,
+	if drt, ok := h.directors[msg.sessionId]; ok {
+		go func(ans chan PlayedSceneResult, drt *director) {
+			ans <- PlayedSceneResult{
+				Result:         drt.PlayScene(*msg),
+				WorkedDirector: drt,
 			}
-		}(msg.answer, client)
+		}(msg.answer, drt)
 	}
 }
 
-func (h *ScriptHub) unregisterClient(client *Client) {
-	if _, ok := h.Clients[client.clientId]; ok {
-		delete(h.Clients, client.clientId)
+func (h *ScriptHub) applyDirectorDetaching(drt *director) {
+	if _, ok := h.directors[drt.sessionId]; ok {
+		delete(h.directors, drt.sessionId)
 	}
 }
 
 func (h *ScriptHub) Run() {
 	for {
 		select {
-		case client, ok := <-h.register:
+		case drt, ok := <-h.attacher:
 			if ok {
-				h.Clients[client.clientId] = client
+				h.directors[drt.sessionId] = drt
 			}
 			break
-		case client, ok := <-h.unregister:
+		case drt, ok := <-h.dettacher:
 			if ok {
-				h.unregisterClient(client)
+				h.applyDirectorDetaching(drt)
 			}
 			break
 		case msg, ok := <-h.broadcast:
@@ -153,7 +144,7 @@ func (h *ScriptHub) Run() {
 			}
 			break
 		case <-h.stopHub:
-			h.unregisterAll()
+			h.detachAll()
 			return
 		default:
 			break

@@ -301,9 +301,11 @@ type response struct {
 	Version  string          `json:"version"`  // Версия протокола.
 }
 
+type eventFunc func(r Request) (Response, error)
+
 // Webhook структура.
 type Webhook struct {
-	event func(r Request) Response
+	event eventFunc
 	l     logger.Interface
 }
 
@@ -318,7 +320,7 @@ func NewWebhook(l logger.Interface) *Webhook {
 //
 // Таймаут ожидания ответа — 5 секунд, после чего сервер Маруси завершит
 // сессию.
-func (wh *Webhook) OnEvent(f func(r Request) Response) {
+func (wh *Webhook) OnEvent(f eventFunc) {
 	wh.event = f
 }
 
@@ -336,11 +338,15 @@ func (wh *Webhook) HandleFunc(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		wh.l.Error(err, "http - marusia handler")
 		ginutilits.ErrorResponse(c, http.StatusBadRequest, "invalid request body")
-
 		return
 	}
 
-	resp := wh.event(req)
+	resp, err := wh.event(req)
+
+	if err != nil {
+		ginutilits.ErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	fullResponse := response{
 		Response: resp,

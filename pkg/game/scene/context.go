@@ -42,7 +42,7 @@ func (c *Context) Set(key string, value any) {
 // If the value does not exist it returns (nil, false)
 func (c *Context) Get(key string) (value any, exists bool) {
 	value = c.Value(key)
-	return value, value == nil
+	return value, value != nil
 }
 
 // MustGet returns the value for the given key if it exists, otherwise it panics.
