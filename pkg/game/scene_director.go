@@ -88,6 +88,7 @@ func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 		info.Buttons = append(info.Buttons, scene.Button{Title: so.cf.EndCommand})
 	}
 
+	so.ctx = ctx.Context
 	return Result{
 		Text:          info.Text,
 		Buttons:       info.Buttons,

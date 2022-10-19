@@ -4,6 +4,7 @@ import (
 	"github.com/evrone/go-clean-template/pkg/game/matchers"
 	"github.com/evrone/go-clean-template/pkg/game/scene"
 	"github.com/evrone/go-clean-template/pkg/grpc/client"
+	"log"
 	"strconv"
 )
 
@@ -14,7 +15,8 @@ type StartScene struct {
 }
 
 func (ss *StartScene) React(ctx *scene.Context) scene.Command {
-	id, _ := ss.Game.Create(ctx.Context)
+	id, err := ss.Game.Create(ctx.Context)
+	log.Print(err)
 	SessionToId[ctx.Info.SessionId] = id
 	return scene.NoCommand
 }
@@ -97,10 +99,6 @@ type DayInfo struct {
 const glassNumber = "glassNumber"
 
 func (gns *DayInfo) React(ctx *scene.Context) scene.Command {
-	weather, _ := gns.Game.RandomWeather(ctx.Context, SessionToId[ctx.Info.SessionId])
-	gns.Weather = weather.Wtype
-	gns.Chance = weather.RainChance
-
 	number, _ := strconv.Atoi(ctx.Request.SearchedMessage)
 	ctx.Set(glassNumber, number)
 	return scene.NoCommand
@@ -110,7 +108,12 @@ func (gns *DayInfo) Next() scene.Scene {
 	return &IceInfo{gns.Game}
 }
 
-func (gns *DayInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
+func (gns *DayInfo) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
+	weather, err := gns.Game.RandomWeather(ctx.Context, SessionToId[ctx.Info.SessionId])
+	log.Print(err)
+	gns.Weather = weather.Wtype
+	gns.Chance = weather.RainChance
+
 	return scene.Info{
 		Text: scene.Text{
 			BaseText:     GetDayInfoText(gns.Day, gns.Balance, gns.Weather, gns.Chance),
@@ -184,16 +187,18 @@ const Price = "price"
 func (pi *PriceInfo) React(ctx *scene.Context) scene.Command {
 	number, _ := strconv.Atoi(ctx.Request.SearchedMessage)
 	ctx.Set(Price, number)
-	iceN := ctx.GetInt64(iceNumber)
-	adjN := ctx.GetInt64(AdjNumber)
-	glassN := ctx.GetInt64(glassNumber)
+	iceN := ctx.GetInt(iceNumber)
+	adjN := ctx.GetInt(AdjNumber)
+	glassN := ctx.GetInt(glassNumber)
 
-	res, _ := pi.Game.Calculate(ctx.Context, SessionToId[ctx.Info.SessionId], &client.DayParams{
-		CupsAmount:  glassN,
-		IceAmount:   iceN,
-		StandAmount: adjN,
+	res, err := pi.Game.Calculate(ctx.Context, SessionToId[ctx.Info.SessionId], &client.DayParams{
+		CupsAmount:  int64(glassN),
+		IceAmount:   int64(iceN),
+		StandAmount: int64(adjN),
 		Price:       int64(number),
 	})
+
+	log.Print(err)
 
 	pi.day = uint64(res.Day)
 	pi.balance = res.Balance

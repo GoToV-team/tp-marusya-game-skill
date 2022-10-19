@@ -1,6 +1,9 @@
 package lemonadescript
 
-import "github.com/evrone/go-clean-template/pkg/stringutilits"
+import (
+	"github.com/evrone/go-clean-template/pkg/stringutilits"
+	"unicode"
+)
 
 const (
 	StartText = "Привет! Добро пожаловать в игру \"Лимонадная стойка\". " +
@@ -37,8 +40,11 @@ const (
 )
 
 func GetHelloText(playerName string) string {
+	r := []rune(playerName)
+	r[0] = unicode.ToUpper(r[0])
+	s := string(r)
 	return stringutilits.StringFormat(HelloText,
-		"playerName", playerName,
+		"playerName", s,
 	)
 }
 

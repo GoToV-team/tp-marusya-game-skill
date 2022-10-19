@@ -11,7 +11,7 @@ func NewLemonadeScript(client client.LemonadeGameClient) game.SceneDirectorConfi
 		StartScene:   &StartScene{client},
 		GoodbyeScene: &InitGoodByeScene{client},
 		ErrorScene:   &ErrorScene{client, ""},
-		EndCommand:   "Пока!",
+		EndCommand:   "Пока",
 		GoodbyeMessage: scene.Text{
 			BaseText:     GoodbyeText,
 			TextToSpeech: GoodbyeTTS,

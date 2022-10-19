@@ -7,6 +7,5 @@ const (
 
 	startBalance = 1000
 	firstDay     = 1
-	maxDay       = 7
+	maxDay       = 2
 )
-
