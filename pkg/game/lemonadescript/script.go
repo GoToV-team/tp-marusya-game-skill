@@ -258,7 +258,7 @@ func (eod *EndOfDay) React(_ *scene.Context) scene.Command {
 }
 
 func (eod *EndOfDay) Next() scene.Scene {
-	return &DayInfo{eod.Game, eod.day, eod.balance, "", 0}
+	return &DayInfo{eod.Game, eod.day + 1, eod.balance, "", 0}
 }
 
 func (eod *EndOfDay) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {

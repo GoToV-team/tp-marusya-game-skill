@@ -3,6 +3,7 @@ package v1
 
 import (
 	"github.com/evrone/go-clean-template/pkg/game"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,6 +23,11 @@ import (
 // @BasePath    /v1
 func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorConfig, hub *game.ScriptHub) {
 	// Options
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{"http://localhost", "https://skill-debugger.marusia.mail.ru"}
+	corsConfig.AllowMethods = []string{"POST"}
+
+	handler.Use(cors.New(corsConfig))
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
 

@@ -7,7 +7,6 @@ import (
 	"github.com/evrone/go-clean-template/pkg/game/lemonadescript"
 	grpc2 "github.com/evrone/go-clean-template/pkg/grpc"
 	"github.com/evrone/go-clean-template/pkg/grpc/client"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"os"
 	"os/signal"
@@ -51,16 +50,12 @@ func Run(cfg *config.Config) {
 	}
 
 	// HTTP Server
-	handler := gin.New()
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowOrigins = []string{"http://localhost", "https://skill-debugger.marusia.mail.ru"}
-	corsConfig.AllowMethods = []string{"POST"}
 
 	gameDirectorConfig := lemonadescript.NewLemonadeScript(client.NewLemonadeGame(grpc))
 
 	hub := game.NewHub()
 
-	handler.Use(cors.New(corsConfig))
+	handler := gin.New()
 	v1.NewRouter(handler, l, gameDirectorConfig, hub)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
