@@ -34,8 +34,7 @@ func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 		sceneInfo, _ = so.currentScene.GetSceneInfo(ctx)
 	}
 
-	errCmd := scene.NoCommand
-	var sceneCmd scene.Command
+	Err := scene.Error(nil)
 
 	switch strings.ToLower(req.Command) {
 	case marusia.OnStart, "debug":
@@ -43,48 +42,45 @@ func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 
 	case marusia.OnInterrupt, strings.ToLower(so.cf.EndCommand):
 		so.stashedScene.Push(so.currentScene)
-		sceneCmd = so.cf.GoodbyeScene.React(ctx)
+		sceneCmd := so.cf.GoodbyeScene.React(ctx)
 		so.currentScene = so.cf.GoodbyeScene.Next()
 		so.reactSceneCommand(sceneCmd)
 
 	default:
 		cmd := so.matchCommands(req.Command, sceneInfo.ExpectedMessages)
 		if cmd != "" {
-			req.Command = cmd
-
-			sceneCmd = so.currentScene.React(ctx)
+			ctx.Request.SearchedMessage = cmd
+			sceneCmd := so.currentScene.React(ctx)
 			so.currentScene = so.currentScene.Next()
 			so.reactSceneCommand(sceneCmd)
 		} else {
-			so.stashedScene.Push(so.currentScene)
-			errCmd = so.cf.ErrorScene.React(ctx)
-			so.currentScene = so.cf.ErrorScene.Next()
+			Err = sceneInfo.Err
 		}
 	}
 
 	info := scene.Info{}
-	withReact := true
 	if so.isEndOfScript {
-		info = scene.Info{Text: so.cf.GoodbyeMessage}
+		info = so.endSessionInfo()
 	} else {
-		info, withReact = so.currentScene.GetSceneInfo(ctx)
-		for !withReact {
-			so.currentScene = so.currentScene.Next()
-			oldInfo := info
-			info, withReact = so.currentScene.GetSceneInfo(ctx)
-			info = scene.Info{
-				Text: scene.Text{
-					BaseText:     oldInfo.Text.BaseText + "\n" + info.Text.BaseText,
-					TextToSpeech: oldInfo.Text.TextToSpeech + "\n" + info.Text.TextToSpeech,
-				},
-				Buttons:          info.Buttons,
-				ExpectedMessages: info.ExpectedMessages,
+		if Err != nil {
+			if Err.IsErrorScene() {
+				errCmd := so.cf.ErrorScene.React(ctx)
+				tmpScene, ErrInfo := so.baseSceneInfo(so.cf.ErrorScene.Next(), ctx)
+				if errCmd != scene.ApplyStashedScene {
+					so.stashedScene.Push(so.currentScene)
+					so.currentScene = tmpScene
+				}
+
+				info = ErrInfo
+			} else {
+				info = sceneInfo
+				info.Text.BaseText = Err.GetErrorText()
+				info.Text.TextToSpeech = Err.GetErrorText()
 			}
+		} else {
+			so.currentScene, info = so.baseSceneInfo(so.currentScene, ctx)
 		}
 
-		if errCmd == scene.ApplyStashedScene && !so.stashedScene.Empty() {
-			so.currentScene, _ = so.stashedScene.Pop()
-		}
 		info.Buttons = append(info.Buttons, scene.Button{Title: so.cf.EndCommand})
 	}
 
@@ -94,6 +90,29 @@ func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 		Buttons:       info.Buttons,
 		IsEndOfScript: so.isEndOfScript,
 	}
+}
+
+func (so *ScriptDirector) endSessionInfo() scene.Info {
+	return scene.Info{Text: so.cf.GoodbyeMessage}
+}
+
+func (so *ScriptDirector) baseSceneInfo(currentScene scene.Scene, ctx *scene.Context) (scene.Scene, scene.Info) {
+	info, withReact := currentScene.GetSceneInfo(ctx)
+	for !withReact {
+		currentScene = currentScene.Next()
+		oldInfo := info
+		info, withReact = currentScene.GetSceneInfo(ctx)
+		info = scene.Info{
+			Text: scene.Text{
+				BaseText:     oldInfo.Text.BaseText + "\n" + info.Text.BaseText,
+				TextToSpeech: oldInfo.Text.TextToSpeech + "\n" + info.Text.TextToSpeech,
+			},
+			Buttons:          info.Buttons,
+			ExpectedMessages: info.ExpectedMessages,
+		}
+	}
+
+	return currentScene, info
 }
 
 func (so *ScriptDirector) reactSceneCommand(command scene.Command) {

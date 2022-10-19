@@ -37,6 +37,7 @@ func (ss *StartScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 				Title: matchers.AgreeString,
 			},
 		},
+		Err: &scene.BaseSceneError{Scene: &ErrorScene{ss.Game, ""}},
 	}, true
 }
 
@@ -85,6 +86,7 @@ func (hs *HelloScene) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 			TextToSpeech: GetHelloTTS(userName),
 		},
 		ExpectedMessages: []scene.MessageMatcher{},
+		Err:              &matchers.PositiveNumberError,
 	}, false
 }
 
@@ -120,6 +122,7 @@ func (gns *DayInfo) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 			TextToSpeech: GetDayInfoTTS(gns.Day, gns.Balance, gns.Weather, gns.Chance),
 		},
 		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		Err:              &matchers.PositiveNumberError,
 	}, true
 }
 
@@ -146,6 +149,7 @@ func (ii *IceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			TextToSpeech: IceInfoTTS,
 		},
 		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		Err:              &matchers.PositiveNumberError,
 	}, true
 }
 
@@ -172,6 +176,7 @@ func (ai *AdjInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			TextToSpeech: AdjInfoTTS,
 		},
 		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		Err:              &matchers.PositiveNumberError,
 	}, true
 }
 
@@ -221,6 +226,7 @@ func (pi *PriceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			TextToSpeech: PriceTTS,
 		},
 		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		Err:              &matchers.PositiveNumberError,
 	}, true
 }
 
@@ -273,6 +279,7 @@ func (eod *EndOfDay) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 				Title: matchers.AgreeString,
 			},
 		},
+		Err: &scene.BaseSceneError{Scene: &ErrorScene{eod.Game, ""}},
 	}, true
 }
 

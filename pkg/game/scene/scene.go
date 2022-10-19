@@ -23,4 +23,37 @@ type Info struct {
 	Text             Text
 	Buttons          []Button
 	ExpectedMessages []MessageMatcher
+	Err              Error
+}
+
+type BaseTextError struct {
+	Message string
+}
+
+func (bte BaseTextError) GetErrorText() string {
+	return bte.Message
+}
+
+func (bte BaseTextError) GetErrorScene() Scene {
+	return nil
+}
+
+func (bte BaseTextError) IsErrorScene() bool {
+	return false
+}
+
+type BaseSceneError struct {
+	Scene Scene
+}
+
+func (bse BaseSceneError) GetErrorText() string {
+	return ""
+}
+
+func (bse BaseSceneError) GetErrorScene() Scene {
+	return bse.Scene
+}
+
+func (bse BaseSceneError) IsErrorScene() bool {
+	return true
 }
