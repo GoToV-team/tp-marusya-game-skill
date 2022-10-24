@@ -59,28 +59,27 @@ func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 	}
 
 	info := scene.Info{}
-	if so.isEndOfScript {
-		info = so.endSessionInfo()
-	} else {
-		if Err != nil {
-			if Err.IsErrorScene() {
-				errCmd := so.cf.ErrorScene.React(ctx)
-				tmpScene, ErrInfo := so.baseSceneInfo(so.cf.ErrorScene.Next(), ctx)
-				if errCmd != scene.ApplyStashedScene {
-					so.stashedScene.Push(so.currentScene)
-					so.currentScene = tmpScene
-				}
 
-				info = ErrInfo
-			} else {
-				info = sceneInfo
-				info.Text.BaseText = Err.GetErrorText()
-				info.Text.TextToSpeech = Err.GetErrorText()
+	if Err != nil {
+		if Err.IsErrorScene() {
+			errCmd := Err.GetErrorScene().React(ctx)
+			tmpScene, ErrInfo := so.baseSceneInfo(Err.GetErrorScene().Next(), ctx)
+			if errCmd != scene.ApplyStashedScene {
+				so.stashedScene.Push(so.currentScene)
+				so.currentScene = tmpScene
 			}
-		} else {
-			so.currentScene, info = so.baseSceneInfo(so.currentScene, ctx)
-		}
 
+			info = ErrInfo
+		} else {
+			info = sceneInfo
+			info.Text.BaseText = Err.GetErrorText()
+			info.Text.TextToSpeech = Err.GetErrorText()
+		}
+	} else {
+		so.currentScene, info = so.baseSceneInfo(so.currentScene, ctx)
+	}
+
+	if !so.isEndOfScript {
 		info.Buttons = append(info.Buttons, scene.Button{Title: so.cf.EndCommand})
 	}
 
@@ -90,10 +89,6 @@ func (so *ScriptDirector) PlayScene(req SceneRequest) Result {
 		Buttons:       info.Buttons,
 		IsEndOfScript: so.isEndOfScript,
 	}
-}
-
-func (so *ScriptDirector) endSessionInfo() scene.Info {
-	return scene.Info{Text: so.cf.GoodbyeMessage}
 }
 
 func (so *ScriptDirector) baseSceneInfo(currentScene scene.Scene, ctx *scene.Context) (scene.Scene, scene.Info) {

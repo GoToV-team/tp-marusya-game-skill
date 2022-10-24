@@ -296,7 +296,7 @@ func (igs *InitGoodByeScene) Next() scene.Scene {
 }
 
 func (igs *InitGoodByeScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
-	return scene.Info{}, true
+	return scene.Info{Text: scene.Text{BaseText: GoodbyeText, TextToSpeech: GoodbyeTTS}}, true
 }
 
 type ErrorScene struct {

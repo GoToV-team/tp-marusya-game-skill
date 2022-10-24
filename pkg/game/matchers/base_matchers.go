@@ -10,6 +10,7 @@ const (
 var (
 	NumberMatcher         = NewRegexMather(`[\-]{0,1}[0-9]+[\.][0-9]+|[\-]{0,1}[0-9]+`)
 	PositiveNumberMatcher = NewRegexMather(`^\+?(0*[1-9]\d*(?:[\., ]\d+)*) *(?:\p{Sc}|°[FC])?$`)
+	AnyMatcher            = NewRegexMather(`.*`)
 	FirstWord             = NewRegexMather(`[^\s]+`)
 	PositiveNumberError   = scene.BaseTextError{
 		Message: positiveNumberErrorString,
