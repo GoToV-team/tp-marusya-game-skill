@@ -2,9 +2,7 @@ package main
 
 import (
 	"github.com/evrone/go-clean-template/config"
-	num2words2 "github.com/evrone/go-clean-template/pkg/num2words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/languages"
+	"github.com/evrone/go-clean-template/internal/app"
 	"log"
 )
 
@@ -15,11 +13,6 @@ func main() {
 		log.Fatalf("Config error: %s", err)
 	}
 
-	/*// Run
-	app.Run(cfg)*/
-
-	err = words.LoadWordsConstants(languages.Russia, cfg.App.ResourcesDir)
-	print(err)
-	res, _ := num2words2.Convert("2/2052", num2words2.DefaultOption)
-	print(res)
+	// Run
+	app.Run(cfg)
 }

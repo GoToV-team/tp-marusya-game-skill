@@ -13,11 +13,9 @@ type Result struct {
 }
 
 type SceneDirectorConfig struct {
-	StartScene     scene.Scene
-	ErrorScene     scene.Scene
-	GoodbyeScene   scene.Scene
-	EndCommand     string
-	GoodbyeMessage scene.Text
+	StartScene   scene.Scene
+	GoodbyeScene scene.Scene
+	EndCommand   string
 }
 
 type UserInfo struct {
