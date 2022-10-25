@@ -1,8 +1,8 @@
 package lemonadescript
 
 import (
-	"github.com/evrone/go-clean-template/pkg/game/matchers"
-	"github.com/evrone/go-clean-template/pkg/game/scene"
+	"github.com/ThCompiler/go_game_constractor/director/matchers"
+	"github.com/ThCompiler/go_game_constractor/director/scene"
 	"github.com/evrone/go-clean-template/pkg/grpc/client"
 	"log"
 	"strconv"

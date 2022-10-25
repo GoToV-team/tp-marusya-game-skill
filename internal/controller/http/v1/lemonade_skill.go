@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"github.com/evrone/go-clean-template/pkg/game"
-	"github.com/evrone/go-clean-template/pkg/game/scene"
-	"github.com/evrone/go-clean-template/pkg/marusia"
+	game "github.com/ThCompiler/go_game_constractor/director"
+	"github.com/ThCompiler/go_game_constractor/director/scene"
+	"github.com/ThCompiler/go_game_constractor/marusia"
 	"github.com/gin-gonic/gin"
 	"time"
 
@@ -14,13 +14,13 @@ const RequestTime = 60 * time.Second
 
 type LemonadeSkillRoute struct {
 	sdc  game.SceneDirectorConfig
-	shub game.ScriptRunner
+	shub marusia.ScriptRunner
 	l    logger.Interface
 	wh   *marusia.Webhook
 }
 
 func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
-	shub game.ScriptRunner, l logger.Interface) {
+	shub marusia.ScriptRunner, l logger.Interface) {
 	r := &LemonadeSkillRoute{
 		sdc:  sdc,
 		shub: shub,
