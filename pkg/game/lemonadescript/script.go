@@ -267,10 +267,13 @@ func (eod *EndOfDay) Next() scene.Scene {
 	return &DayInfo{eod.Game, eod.day + 1, eod.balance, "", 0}
 }
 
-func (eod *EndOfDay) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
+func (eod *EndOfDay) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
+	iceN := int64(ctx.GetInt(iceNumber))
+	adjN := int64(ctx.GetInt(AdjNumber))
+	glassN := int64(ctx.GetInt(glassNumber))
 	return scene.Info{
 		Text: scene.Text{
-			BaseText:     GetEndOfDayText(eod.balance, eod.profit),
+			BaseText:     GetEndOfDayText(glassN*10, iceN*50, adjN*10, eod.balance, eod.profit),
 			TextToSpeech: GetEndOfDayTTS(eod.balance, eod.profit),
 		},
 		ExpectedMessages: []scene.MessageMatcher{matchers.Agree},
