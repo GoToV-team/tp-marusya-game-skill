@@ -121,7 +121,7 @@ func (gns *DayInfo) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 			BaseText:     GetDayInfoText(gns.Day, gns.Balance, gns.Weather, gns.Chance),
 			TextToSpeech: GetDayInfoTTS(gns.Day, gns.Balance, gns.Weather, gns.Chance),
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -148,7 +148,7 @@ func (ii *IceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     IceInfoText,
 			TextToSpeech: IceInfoTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -175,7 +175,7 @@ func (ai *AdjInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     AdjInfoText,
 			TextToSpeech: AdjInfoTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -225,7 +225,7 @@ func (pi *PriceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     PriceText,
 			TextToSpeech: PriceTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }

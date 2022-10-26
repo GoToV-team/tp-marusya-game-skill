@@ -1,12 +1,11 @@
-package num2words
+package convertor
 
-// TODO
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/functions"
+	"github.com/evrone/go-clean-template/pkg/convertor/num2words/functions"
 	"strconv"
 )
 
-// Convert num2words number into the words representation.
+// Convert convertor number into the words representation.
 func Convert(number interface{}, options Options) (string, error) {
 	numberString := convertNumberToString(number)
 	if numberString == "" {

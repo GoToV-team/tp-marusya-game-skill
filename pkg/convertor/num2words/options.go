@@ -1,9 +1,9 @@
-package num2words
+package convertor
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/currency"
-	"github.com/evrone/go-clean-template/pkg/num2words/words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/currency"
+	"github.com/evrone/go-clean-template/pkg/convertor/words"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
 )
 
 var DefaultOption = NewOptions(currency.RUB, declension.NOMINATIVE, -1,
@@ -89,7 +89,7 @@ func (o *Options) getCurrencyObject() currency.CustomCurrency {
 	if o.currency == currency.CUSTOM {
 		return *o.currencyInfo
 	} else {
-		return words.WordConstantsForNumbers.CurrenciesStrings.Currencies[o.currency]
+		return words.WordConstants.N2w.CurrenciesStrings.Currencies[o.currency]
 	}
 }
 

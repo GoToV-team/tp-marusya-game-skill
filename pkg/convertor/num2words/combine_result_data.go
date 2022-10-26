@@ -1,13 +1,13 @@
-package num2words
+package convertor
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/constants"
-	"github.com/evrone/go-clean-template/pkg/num2words/currency"
-	functions2 "github.com/evrone/go-clean-template/pkg/num2words/functions"
-	"github.com/evrone/go-clean-template/pkg/num2words/objects"
-	"github.com/evrone/go-clean-template/pkg/num2words/words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/genders"
+	"github.com/evrone/go-clean-template/pkg/convertor/constants"
+	"github.com/evrone/go-clean-template/pkg/convertor/currency"
+	functions2 "github.com/evrone/go-clean-template/pkg/convertor/num2words/functions"
+	"github.com/evrone/go-clean-template/pkg/convertor/num2words/objects"
+	"github.com/evrone/go-clean-template/pkg/convertor/words"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/genders"
 	"github.com/evrone/go-clean-template/pkg/stringutilits"
 	"strings"
 	"unicode"
@@ -26,7 +26,7 @@ func combineResultData(number objects.Number, appliedOptions Options) string {
 	if number.Sign == "-" {
 		// Если отображать знак минус словом
 		if appliedOptions.convertMinusSignToWord {
-			convertedNumber.Sign = words.WordConstantsForNumbers.Sign.Minus
+			convertedNumber.Sign = words.WordConstants.N2w.Sign.Minus
 		} else {
 			convertedNumber.Sign = "-"
 		}

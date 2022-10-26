@@ -1,10 +1,10 @@
 package functions
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/constants"
-	"github.com/evrone/go-clean-template/pkg/num2words/currency"
-	"github.com/evrone/go-clean-template/pkg/num2words/objects"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/constants"
+	"github.com/evrone/go-clean-template/pkg/convertor/currency"
+	"github.com/evrone/go-clean-template/pkg/convertor/num2words/objects"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
 )
 
 func GetCurrencyWord(

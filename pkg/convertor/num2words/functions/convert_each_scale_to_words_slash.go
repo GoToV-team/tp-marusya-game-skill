@@ -1,10 +1,10 @@
 package functions
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/objects"
-	"github.com/evrone/go-clean-template/pkg/num2words/words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/genders"
+	"github.com/evrone/go-clean-template/pkg/convertor/num2words/objects"
+	"github.com/evrone/go-clean-template/pkg/convertor/words"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/genders"
 	"strings"
 )
 
@@ -35,7 +35,7 @@ func ConvertEachScaleToWordsSlash(
 	// Если нет ни одного не пустого класса
 	if lastScaleWihNumber == -1 {
 		// Вернуть ноль
-		zeroValuesObject := words.WordConstantsForNumbers.OrdinalNumbers.Units[0]
+		zeroValuesObject := words.WordConstants.N2w.OrdinalNumbers.Units[0]
 		return zeroValuesObject[genders.FEMALE][numberDecl][numberScaleForm]
 	}
 
@@ -80,13 +80,13 @@ func convertOtherScaleToWordsSlash(scaleToConvert objects.NumericDigitTriplet, s
 
 	convertedScale := objects.StringDigitTriplet{
 		Units:    "",
-		Dozens:   words.WordConstantsForNumbers.SlashNumberUnitPrefixes.Tens[scaleToConvert.Units],
-		Hundreds: words.WordConstantsForNumbers.SlashNumberUnitPrefixes.Hundreds[scaleToConvert.Hundreds],
+		Dozens:   words.WordConstants.N2w.SlashNumberUnitPrefixes.Tens[scaleToConvert.Units],
+		Hundreds: words.WordConstants.N2w.SlashNumberUnitPrefixes.Hundreds[scaleToConvert.Hundreds],
 	}
 	if scaleToConvert.Dozens != 1 {
 		convertedScale.Dozens =
-			words.WordConstantsForNumbers.SlashNumberUnitPrefixes.Dozens[scaleToConvert.Dozens]
-		convertedScale.Units = words.WordConstantsForNumbers.SlashNumberUnitPrefixes.Units[scaleToConvert.Units]
+			words.WordConstants.N2w.SlashNumberUnitPrefixes.Dozens[scaleToConvert.Dozens]
+		convertedScale.Units = words.WordConstants.N2w.SlashNumberUnitPrefixes.Units[scaleToConvert.Units]
 	}
 	/* Если весь класс равен === 001
 	   и до него не было значений */
@@ -97,14 +97,14 @@ func convertOtherScaleToWordsSlash(scaleToConvert objects.NumericDigitTriplet, s
 
 	if scaleNumber != 0 {
 		// Получить корень названия класса числа ("тысяч")
-		unitNameBeginnig := words.WordConstantsForNumbers.FractionalUnit.FractionalUnitsBeginning[scaleNumber-1]
-		if scaleNumber > len(words.WordConstantsForNumbers.FractionalUnit.FractionalUnitsBeginning) {
-			unitNameBeginnig = words.WordConstantsForNumbers.UnitScalesNames.OtherBeginning[scaleNumber-2]
+		unitNameBeginnig := words.WordConstants.N2w.FractionalUnit.FractionalUnitsBeginning[scaleNumber-1]
+		if scaleNumber > len(words.WordConstants.N2w.FractionalUnit.FractionalUnitsBeginning) {
+			unitNameBeginnig = words.WordConstants.N2w.UnitScalesNames.OtherBeginning[scaleNumber-2]
 		}
 
 		// Получить окончание названия класса числа с правильным падежом ("ная", "ной", "ных" и т.д.)
 		unitNameEnding :=
-			words.WordConstantsForNumbers.FractionalUnit.FractionalUnitEndings[numberDeclension][numberScaleForm]
+			words.WordConstants.N2w.FractionalUnit.FractionalUnitEndings[numberDeclension][numberScaleForm]
 		// Добавить текст к общему результату
 		return convertedScale.Hundreds + convertedScale.Dozens + convertedScale.Units +
 			unitNameBeginnig + unitNameEnding + " "
@@ -124,15 +124,15 @@ func convertLastScaleToWordsSlash(scaleToConvert objects.NumericDigitTriplet,
 	digitToConvert := scaleToConvert.Hundreds // Цифра для конвертирования
 
 	// Получить объект для выбора формы последнего разряда
-	lastDigitDeclensionsObject := words.WordConstantsForNumbers.OrdinalNumbers.Hundreds
+	lastDigitDeclensionsObject := words.WordConstants.N2w.OrdinalNumbers.Hundreds
 	if scaleToConvert.Units != 0 { // если разряд сотен
 		scaleForCommonConvert.Units = 0
 		digitToConvert = scaleToConvert.Units
-		lastDigitDeclensionsObject = words.WordConstantsForNumbers.OrdinalNumbers.Units
+		lastDigitDeclensionsObject = words.WordConstants.N2w.OrdinalNumbers.Units
 	} else if scaleToConvert.Dozens != 0 { // если разряд десятков
 		scaleForCommonConvert.Dozens = 0
 		digitToConvert = scaleToConvert.Dozens
-		lastDigitDeclensionsObject = words.WordConstantsForNumbers.OrdinalNumbers.Dozens
+		lastDigitDeclensionsObject = words.WordConstants.N2w.OrdinalNumbers.Dozens
 	} else {
 		scaleForCommonConvert.Hundreds = 0
 	}
@@ -155,7 +155,7 @@ func convertLastScaleToWordsSlash(scaleToConvert objects.NumericDigitTriplet,
 
 	// Если в десятках цифра 1 (число 10-19)
 	if scaleToConvert.Dozens == 1 {
-		lastDigitDeclensionsObject = words.WordConstantsForNumbers.OrdinalNumbers.Tens
+		lastDigitDeclensionsObject = words.WordConstants.N2w.OrdinalNumbers.Tens
 		digitToConvert = scaleToConvert.Units
 	}
 

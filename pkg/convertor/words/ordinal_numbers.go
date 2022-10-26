@@ -1,9 +1,9 @@
 package words
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/constants"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/genders"
+	"github.com/evrone/go-clean-template/pkg/convertor/constants"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/genders"
 )
 
 type declensionOrdinalNumbersT map[declension.Declension][constants.CountScaleNumberNameForms]string

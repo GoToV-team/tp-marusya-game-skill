@@ -1,10 +1,10 @@
 package functions
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/constants"
-	"github.com/evrone/go-clean-template/pkg/num2words/objects"
-	words2 "github.com/evrone/go-clean-template/pkg/num2words/words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/constants"
+	"github.com/evrone/go-clean-template/pkg/convertor/objects"
+	words2 "github.com/evrone/go-clean-template/pkg/convertor/words"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
 	"math"
 )
 
@@ -15,9 +15,9 @@ func GetFractionalUnitCurrencyNumber(scaleIndex int, digitToConvert objects.Digi
 		scaleIndex = 0
 	}
 	res := ""
-	unitDeclensionsObject := words2.WordConstantsForNumbers.FractionalUnit.FractionalUnitsDeclensions.Tens
+	unitDeclensionsObject := words2.WordConstants.N2w.FractionalUnit.FractionalUnitsDeclensions.Tens
 	if scaleIndex == 1 {
-		unitDeclensionsObject = words2.WordConstantsForNumbers.FractionalUnit.FractionalUnitsDeclensions.Hundreds
+		unitDeclensionsObject = words2.WordConstants.N2w.FractionalUnit.FractionalUnitsDeclensions.Hundreds
 	} else if scaleIndex > 1 {
 		// Определить класс числа
 		// (0 - единицы, 1 - тысячи, 2 - миллионы и т.д.).
@@ -30,17 +30,17 @@ func GetFractionalUnitCurrencyNumber(scaleIndex int, digitToConvert objects.Digi
 		// (0 - единицы, 1 - десятки, 2 - сотни).
 		digitIndexInScale := scaleIndex - numberScale*3 + 1
 		// Получить корень названия класса числа
-		unitNameBegin := words2.WordConstantsForNumbers.FractionalUnit.FractionalUnitsBeginning[numberScale-1]
-		if numberScale > len(words2.WordConstantsForNumbers.FractionalUnit.FractionalUnitsBeginning) {
-			unitNameBegin = words2.WordConstantsForNumbers.UnitScalesNames.OtherBeginning[numberScale-2]
+		unitNameBegin := words2.WordConstants.N2w.FractionalUnit.FractionalUnitsBeginning[numberScale-1]
+		if numberScale > len(words2.WordConstants.N2w.FractionalUnit.FractionalUnitsBeginning) {
+			unitNameBegin = words2.WordConstants.N2w.UnitScalesNames.OtherBeginning[numberScale-2]
 		}
 
 		// Получить приставку к числу
-		unitNamePrefix := words2.WordConstantsForNumbers.FractionalUnit.FractionalUnitPrefixes[digitIndexInScale]
+		unitNamePrefix := words2.WordConstants.N2w.FractionalUnit.FractionalUnitPrefixes[digitIndexInScale]
 
 		// Составить объект с падежами
 		unitDeclensionsObject = words2.DeclensionFractionalUnits{}
-		for key, value := range words2.WordConstantsForNumbers.FractionalUnit.FractionalUnitEndings {
+		for key, value := range words2.WordConstants.N2w.FractionalUnit.FractionalUnitEndings {
 			newWords := [constants.CountScaleNumberNameForms]string{}
 			for i, val := range value {
 				newWords[i] = unitNamePrefix + unitNameBegin + val
