@@ -3,7 +3,7 @@ package v1
 
 import (
 	game "github.com/ThCompiler/go_game_constractor/director"
-	"github.com/ThCompiler/go_game_constractor/marusia"
+	"github.com/ThCompiler/go_game_constractor/marusia/hub"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -22,7 +22,7 @@ import (
 // @version     1.0
 // @host        localhost:8080
 // @BasePath    /v1
-func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorConfig, hub *marusia.ScriptHub) {
+func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorConfig, hub *hub.ScriptHub) {
 	// Options
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"http://localhost", "https://skill-debugger.marusia.mail.ru"}

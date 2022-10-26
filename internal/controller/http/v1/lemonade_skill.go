@@ -4,6 +4,7 @@ import (
 	game "github.com/ThCompiler/go_game_constractor/director"
 	"github.com/ThCompiler/go_game_constractor/director/scene"
 	"github.com/ThCompiler/go_game_constractor/marusia"
+	"github.com/ThCompiler/go_game_constractor/marusia/hub"
 	"github.com/gin-gonic/gin"
 	"time"
 
@@ -14,13 +15,13 @@ const RequestTime = 60 * time.Second
 
 type LemonadeSkillRoute struct {
 	sdc  game.SceneDirectorConfig
-	shub marusia.ScriptRunner
+	shub hub.ScriptRunner
 	l    logger.Interface
 	wh   *marusia.Webhook
 }
 
 func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
-	shub marusia.ScriptRunner, l logger.Interface) {
+	shub hub.ScriptRunner, l logger.Interface) {
 	r := &LemonadeSkillRoute{
 		sdc:  sdc,
 		shub: shub,
