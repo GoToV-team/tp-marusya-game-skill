@@ -1,7 +1,7 @@
 package lemonadescript
 
 import (
-	"github.com/evrone/go-clean-template/pkg/game"
+	game "github.com/ThCompiler/go_game_constractor/director"
 	"github.com/evrone/go-clean-template/pkg/grpc/client"
 )
 

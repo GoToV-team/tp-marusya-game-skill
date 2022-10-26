@@ -3,7 +3,7 @@ package app
 
 import (
 	"fmt"
-	"github.com/evrone/go-clean-template/pkg/game"
+	"github.com/ThCompiler/go_game_constractor/marusia/hub"
 	"github.com/evrone/go-clean-template/pkg/game/lemonadescript"
 	grpc2 "github.com/evrone/go-clean-template/pkg/grpc"
 	"github.com/evrone/go-clean-template/pkg/grpc/client"
@@ -53,7 +53,7 @@ func Run(cfg *config.Config) {
 
 	gameDirectorConfig := lemonadescript.NewLemonadeScript(client.NewLemonadeGame(grpc))
 
-	hub := game.NewHub()
+	hub := hub.NewHub()
 
 	handler := gin.New()
 	v1.NewRouter(handler, l, gameDirectorConfig, hub)
