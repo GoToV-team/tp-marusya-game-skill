@@ -42,8 +42,11 @@ func GetDayInfoTTS(day uint64, balance int64, weather string, chance int64) stri
 	)
 }
 
-func GetEndOfDayTTS(balance int64, profit int64) string {
-	return stringutilits.StringFormat(EndOfDayTTS,
+func GetEndOfDayTTS(glassPrice int64, icePrice int64, adjPrice int64, balance int64, profit int64) string {
+	return stringutilits.StringFormat(EndOfDayText,
+		"glassPrice", glassPrice,
+		"icePrice", icePrice,
+		"adjPrice", adjPrice,
 		"profit", profit,
 		"balance", balance,
 	)

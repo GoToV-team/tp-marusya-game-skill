@@ -274,7 +274,7 @@ func (eod *EndOfDay) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 	return scene.Info{
 		Text: scene.Text{
 			BaseText:     GetEndOfDayText(glassN*10, iceN*50, adjN*10, eod.balance, eod.profit),
-			TextToSpeech: GetEndOfDayTTS(eod.balance, eod.profit),
+			TextToSpeech: GetEndOfDayTTS(glassN*10, iceN*50, adjN*10, eod.balance, eod.profit),
 		},
 		ExpectedMessages: []scene.MessageMatcher{matchers.Agree},
 		Buttons: []scene.Button{
