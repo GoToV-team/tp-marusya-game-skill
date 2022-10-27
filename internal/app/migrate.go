@@ -3,12 +3,8 @@
 package app
 
 import (
-	"errors"
-	"log"
-	"os"
 	"time"
 
-	"github.com/golang-migrate/migrate/v4"
 	// migrate tools
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -19,6 +15,7 @@ const (
 	_defaultTimeout  = time.Second
 )
 
+/*
 func init() {
 	databaseURL, ok := os.LookupEnv("PG_URL")
 	if !ok || len(databaseURL) == 0 {
@@ -61,3 +58,4 @@ func init() {
 
 	log.Printf("Migrate: up success")
 }
+*/
