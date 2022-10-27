@@ -1,10 +1,10 @@
 package functions
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/objects"
-	words2 "github.com/evrone/go-clean-template/pkg/num2words/words"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/declension"
-	"github.com/evrone/go-clean-template/pkg/num2words/words/genders"
+	"github.com/evrone/go-clean-template/pkg/convertor/num2words/objects"
+	words2 "github.com/evrone/go-clean-template/pkg/convertor/words"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
+	"github.com/evrone/go-clean-template/pkg/convertor/words/genders"
 	"strings"
 )
 
@@ -36,7 +36,7 @@ func ConvertEachScaleToWords(
 			if numberScalesArrayLen == 1 {
 				convertedResult = convertDigitToWord(
 					digits.Units,
-					words2.WordConstantsForNumbers.DigitWords.Units,
+					words2.WordConstants.N2w.DigitWords.Units,
 					declension,
 					genders.MALE,
 				)
@@ -64,7 +64,7 @@ func ConvertEachScaleToWords(
 		// Определить сотни
 		stringDigits.Hundreds = convertDigitToWord(
 			digits.Hundreds,
-			words2.WordConstantsForNumbers.DigitWords.Hundreds,
+			words2.WordConstants.N2w.DigitWords.Hundreds,
 			declension,
 			gender,
 		)
@@ -73,7 +73,7 @@ func ConvertEachScaleToWords(
 		if digits.Dozens == 1 {
 			stringDigits.Dozens = convertDigitToWord(
 				digits.Units,
-				words2.WordConstantsForNumbers.DigitWords.Tens,
+				words2.WordConstants.N2w.DigitWords.Tens,
 				declension,
 				gender,
 			)
@@ -81,13 +81,13 @@ func ConvertEachScaleToWords(
 		} else {
 			stringDigits.Dozens = convertDigitToWord(
 				digits.Dozens,
-				words2.WordConstantsForNumbers.DigitWords.Dozens,
+				words2.WordConstants.N2w.DigitWords.Dozens,
 				declension,
 				gender,
 			)
 			stringDigits.Units = convertDigitToWord(
 				digits.Units,
-				words2.WordConstantsForNumbers.DigitWords.Units,
+				words2.WordConstants.N2w.DigitWords.Units,
 				declension,
 				gender,
 			)
@@ -175,11 +175,11 @@ func getNumberFormScaleName(scale int, scaleNameForm objects.ScaleForm, decl dec
 
 	if scale == 1 {
 		// Класс тысяч
-		return words2.WordConstantsForNumbers.UnitScalesNames.Thousands[scaleDeclension][scaleForm]
+		return words2.WordConstants.N2w.UnitScalesNames.Thousands[scaleDeclension][scaleForm]
 	}
 
 	// Остальные классы
-	ending := words2.WordConstantsForNumbers.UnitScalesNames.OtherEnding[scaleDeclension][scaleForm]
-	base := words2.WordConstantsForNumbers.UnitScalesNames.OtherBeginning[scale-2]
+	ending := words2.WordConstants.N2w.UnitScalesNames.OtherEnding[scaleDeclension][scaleForm]
+	base := words2.WordConstants.N2w.UnitScalesNames.OtherBeginning[scale-2]
 	return base + ending
 }

@@ -3,14 +3,16 @@ package app
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/ThCompiler/go_game_constractor/marusia/hub"
+	"github.com/evrone/go-clean-template/pkg/game/botanicalgardenscript"
 	"github.com/evrone/go-clean-template/pkg/game/lemonadescript"
 	grpc2 "github.com/evrone/go-clean-template/pkg/grpc"
 	"github.com/evrone/go-clean-template/pkg/grpc/client"
 	"github.com/gin-gonic/gin"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/evrone/go-clean-template/config"
 	v1 "github.com/evrone/go-clean-template/internal/controller/http/v1"
@@ -51,12 +53,13 @@ func Run(cfg *config.Config) {
 
 	// HTTP Server
 
-	gameDirectorConfig := lemonadescript.NewLemonadeScript(client.NewLemonadeGame(grpc))
+	gameDirectorConfigLemonade := lemonadescript.NewLemonadeScript(client.NewLemonadeGame(grpc))
+	gameDirectorConfigGarden := botanicalgardenscript.NewBotanicalGardenScript(client.NewLemonadeGame(grpc))
 
 	hub := hub.NewHub()
 
 	handler := gin.New()
-	v1.NewRouter(handler, l, gameDirectorConfig, hub)
+	v1.NewRouter(handler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, hub)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal

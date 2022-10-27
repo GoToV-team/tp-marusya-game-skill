@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"github.com/evrone/go-clean-template/pkg/num2words/constants"
+	"github.com/evrone/go-clean-template/pkg/convertor/constants"
 	"github.com/evrone/go-clean-template/pkg/stringutilits"
 )
 
