@@ -2,7 +2,7 @@ package functions
 
 import (
 	"github.com/evrone/go-clean-template/pkg/convertor/constants"
-	"github.com/evrone/go-clean-template/pkg/convertor/objects"
+	"github.com/evrone/go-clean-template/pkg/convertor/num2words/objects"
 	words2 "github.com/evrone/go-clean-template/pkg/convertor/words"
 	"github.com/evrone/go-clean-template/pkg/convertor/words/declension"
 	"math"

@@ -1,12 +1,13 @@
 package v1
 
 import (
+	"time"
+
 	game "github.com/ThCompiler/go_game_constractor/director"
 	"github.com/ThCompiler/go_game_constractor/director/scene"
 	"github.com/ThCompiler/go_game_constractor/marusia"
 	"github.com/ThCompiler/go_game_constractor/marusia/hub"
 	"github.com/gin-gonic/gin"
-	"time"
 
 	"github.com/evrone/go-clean-template/pkg/logger"
 )
@@ -30,6 +31,18 @@ func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfi
 	r.initWebhook()
 
 	handler.POST("/lemonade", r.wh.HandleFunc)
+}
+
+func newBotanicalGardenSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
+	shub hub.ScriptRunner, l logger.Interface) {
+	r := &LemonadeSkillRoute{
+		sdc:  sdc,
+		shub: shub,
+		l:    l,
+	}
+	r.initWebhook()
+
+	handler.POST("/garden", r.wh.HandleFunc)
 }
 
 func toMarusiaButtons(buttons []scene.Button) []marusia.Button {

@@ -2,13 +2,14 @@
 package v1
 
 import (
+	"net/http"
+
 	game "github.com/ThCompiler/go_game_constractor/director"
 	"github.com/ThCompiler/go_game_constractor/marusia/hub"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
 
 	// Swagger docs.
 	_ "github.com/evrone/go-clean-template/docs"
@@ -22,7 +23,7 @@ import (
 // @version     1.0
 // @host        localhost:8080
 // @BasePath    /v1
-func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorConfig, hub *hub.ScriptHub) {
+func NewRouter(handler *gin.Engine, l logger.Interface, opLemonade game.SceneDirectorConfig, opGarden game.SceneDirectorConfig, hub *hub.ScriptHub) {
 	// Options
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"http://localhost", "https://skill-debugger.marusia.mail.ru"}
@@ -47,6 +48,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, op game.SceneDirectorCon
 	// Routers
 	h := handler.Group("/v1")
 	{
-		newLemonadeSkillRoute(h, op, hub, l)
+		newLemonadeSkillRoute(h, opLemonade, hub, l)
+		newBotanicalGardenSkillRoute(h, opGarden, hub, l)
 	}
 }
