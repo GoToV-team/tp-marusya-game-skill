@@ -1,30 +1,31 @@
-package client
+package garden
 
 import (
 	"context"
+
 	proto "github.com/evrone/go-clean-template/internal/generated/delivery/protobuf"
 	"google.golang.org/grpc"
 )
 
-type LemonadeGameClient interface {
+type GardenGameClient interface {
 	Create(ctx context.Context) (string, error)
 	RandomWeather(ctx context.Context, userID string) (Weather, error)
 	GetBalance(ctx context.Context, userID string) (int64, error)
-	Calculate(ctx context.Context, userID string, data *DayParams) (DayResult, error)
+	Calculate(ctx context.Context, data *DayParams) (DayResult, error)
 }
 
-type LemonadeGame struct {
-	client proto.LemonadeGameClient
+type GardenGame struct {
+	client proto.BotanicalGardenGameClient
 }
 
-func NewLemonadeGame(con *grpc.ClientConn) *LemonadeGame {
+func NewBotanicalGardenGame(con *grpc.ClientConn) *GardenGame {
 	client := proto.NewLemonadeGameClient(con)
-	return &LemonadeGame{
+	return &GardenGame{
 		client: client,
 	}
 }
 
-func (l *LemonadeGame) Create(ctx context.Context) (string, error) {
+func (l *GardenGame) Create(ctx context.Context) (string, error) {
 	res, err := l.client.Create(ctx, &proto.Nothing{})
 	if err != nil {
 		return "", err
@@ -32,7 +33,7 @@ func (l *LemonadeGame) Create(ctx context.Context) (string, error) {
 	return res.Id, err
 }
 
-func (l *LemonadeGame) RandomWeather(ctx context.Context, userID string) (Weather, error) {
+func (l *GardenGame) RandomWeather(ctx context.Context, userID string) (Weather, error) {
 	protoGameID := &proto.GameID{Id: userID}
 	res, err := l.client.RandomWeather(ctx, protoGameID)
 	if err != nil {
@@ -44,7 +45,7 @@ func (l *LemonadeGame) RandomWeather(ctx context.Context, userID string) (Weathe
 	}, err
 }
 
-func (l *LemonadeGame) GetBalance(ctx context.Context, userID string) (int64, error) {
+func (l *GardenGame) GetBalance(ctx context.Context, userID string) (int64, error) {
 	protoGameID := &proto.GameID{Id: userID}
 	res, err := l.client.GetBalance(ctx, protoGameID)
 	if err != nil {
@@ -53,7 +54,7 @@ func (l *LemonadeGame) GetBalance(ctx context.Context, userID string) (int64, er
 	return res.Balance, nil
 }
 
-func (l *LemonadeGame) Calculate(ctx context.Context, userID string, data *DayParams) (DayResult, error) {
+func (l *GardenGame) Calculate(ctx context.Context, userID string, data *DayParams) (DayResult, error) {
 	protoCalculateData := &proto.CalculateRequest{
 		Game:        &proto.GameID{Id: userID},
 		CupsAmount:  data.CupsAmount,

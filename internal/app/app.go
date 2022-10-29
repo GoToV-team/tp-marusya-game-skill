@@ -11,7 +11,8 @@ import (
 	"github.com/evrone/go-clean-template/pkg/game/botanicalgardenscript"
 	"github.com/evrone/go-clean-template/pkg/game/lemonadescript"
 	grpc2 "github.com/evrone/go-clean-template/pkg/grpc"
-	"github.com/evrone/go-clean-template/pkg/grpc/client"
+	"github.com/evrone/go-clean-template/pkg/grpc/client/garden"
+	"github.com/evrone/go-clean-template/pkg/grpc/client/lemonade"
 	"github.com/gin-gonic/gin"
 
 	"github.com/evrone/go-clean-template/config"
@@ -53,8 +54,8 @@ func Run(cfg *config.Config) {
 
 	// HTTP Server
 
-	gameDirectorConfigLemonade := lemonadescript.NewLemonadeScript(client.NewLemonadeGame(grpc))
-	gameDirectorConfigGarden := botanicalgardenscript.NewBotanicalGardenScript(client.NewLemonadeGame(grpc))
+	gameDirectorConfigLemonade := lemonadescript.NewLemonadeScript(lemonade.NewLemonadeGame(grpc))
+	gameDirectorConfigGarden := botanicalgardenscript.NewBotanicalGardenScript(garden.NewBotanicalGardenGame(grpc))
 
 	hub := hub.NewHub()
 

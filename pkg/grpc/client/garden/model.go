@@ -1,4 +1,4 @@
-package client
+package garden
 
 type Weather struct {
 	Wtype      string
