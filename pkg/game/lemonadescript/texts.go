@@ -37,6 +37,10 @@ const (
 		"{icePrice} рублей на покупку кубиков льда и {adjPrice} рублей - на рекламные стенды и заработали {profit} рублей," +
 		" теперь Ваш баланс: {balance} рублей. Продолжим?"
 
+	StatisticsText = "Топ 5 игроков и их результаты:\n{stats}"
+
+	SaveStatisticsText = "Вы хотите сохранить свой результат {balance} рублей?"
+
 	GoodbyeText = "Пока"
 
 	EndGameText = "Игра окончена, Ваш баланс по истечению недели: {balance}"
@@ -74,8 +78,20 @@ func GetEndOfDayText(glassPrice int64, icePrice int64, adjPrice int64, balance i
 	)
 }
 
+func GetStatisticsText(stats string) string {
+	return stringutilits.StringFormat(StatisticsText,
+		"stats", stats,
+	)
+}
+
 func GetEndGameText(balance int64) string {
 	return stringutilits.StringFormat(EndGameText,
+		"balance", balance,
+	)
+}
+
+func GetSaveStatisticsText(balance int64) string {
+	return stringutilits.StringFormat(SaveStatisticsText,
 		"balance", balance,
 	)
 }

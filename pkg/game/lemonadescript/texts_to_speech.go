@@ -11,19 +11,20 @@ const (
 		"Всего в игре семь дней. На этом с правилами всё.\n Один стакан стоит десять рублей.\n" +
 		"Один кубик льда стоит пятьдесят рублей\nОдин стенд стоит десять рублей\n Поиграем?\n"
 
-	GetNameTTS  = GetNameText
-	HelloTTS    = HelloText
-	DayInfoTTS  = DayInfoText
-	IceInfoTTS  = IceInfoText
-	AdjInfoTTS  = AdjInfoText
-	PriceTTS    = PriceText
-	EndOfDayTTS = EndOfDayText
-	GoodbyeTTS  = GoodbyeText
-	EndGameTTS  = EndGameText
-
-	sunnyWeatherTTS  = sunnyWeatherText
-	hotWeatherTTS    = hotWeatherText
-	cloudyWeatherTTS = cloudyWeatherText
+	GetNameTTS        = GetNameText
+	HelloTTS          = HelloText
+	DayInfoTTS        = DayInfoText
+	IceInfoTTS        = IceInfoText
+	AdjInfoTTS        = AdjInfoText
+	PriceTTS          = PriceText
+	EndOfDayTTS       = EndOfDayText
+	GoodbyeTTS        = GoodbyeText
+	EndGameTTS        = EndGameText
+	StatisticsTTS     = StatisticsText
+	SaveStatisticsTTS = SaveStatisticsText
+	sunnyWeatherTTS   = sunnyWeatherText
+	hotWeatherTTS     = hotWeatherText
+	cloudyWeatherTTS  = cloudyWeatherText
 )
 
 func GetHelloTTS(playerName string) string {
@@ -46,6 +47,18 @@ func GetEndOfDayTTS(glassPrice int64, icePrice int64, adjPrice int64, balance in
 		"icePrice", icePrice,
 		"adjPrice", adjPrice,
 		"profit", profit,
+		"balance", balance,
+	)
+}
+
+func GetStatisticsTTS(stats string) string {
+	return stringutilits.StringFormat(StatisticsTTS,
+		"stats", stats,
+	)
+}
+
+func GetSaveStatisticsTTS(balance int64) string {
+	return stringutilits.StringFormat(SaveStatisticsText,
 		"balance", balance,
 	)
 }

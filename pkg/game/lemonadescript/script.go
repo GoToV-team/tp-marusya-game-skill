@@ -1,9 +1,10 @@
 package lemonadescript
 
 import (
+	"context"
 	"github.com/ThCompiler/go_game_constractor/director/matchers"
 	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/grpc/client"
+	client "github.com/evrone/go-clean-template/pkg/grpc/client/lemonade"
 	"log"
 	"strconv"
 )
@@ -11,17 +12,22 @@ import (
 var SessionToId = make(map[string]string)
 
 type StartScene struct {
-	Game client.LemonadeGameClient
+	Game         client.LemonadeGameClient
+	IsStatistics bool
 }
 
 func (ss *StartScene) React(ctx *scene.Context) scene.Command {
-	id, err := ss.Game.Create(ctx.Context)
-	log.Print(err)
-	SessionToId[ctx.Info.SessionId] = id
+	ss.IsStatistics = ctx.Request.SearchedMessage != matchers.AgreeString
+	if ss.IsStatistics {
+		return scene.StashScene
+	}
 	return scene.NoCommand
 }
 
 func (ss *StartScene) Next() scene.Scene {
+	if ss.IsStatistics {
+		return &StatisticsScene{ss.Game}
+	}
 	return &GetNameScene{ss.Game}
 }
 
@@ -31,10 +37,16 @@ func (ss *StartScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     StartText,
 			TextToSpeech: StartTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.Agree},
+		ExpectedMessages: []scene.MessageMatcher{
+			matchers.NewSelectorMatcher([]string{"Хочу посмотреть статистику", "статистику"},
+				"Хочу посмотреть статистику"),
+			matchers.Agree},
 		Buttons: []scene.Button{
 			{
 				Title: matchers.AgreeString,
+			},
+			{
+				Title: "Хочу посмотреть статистику",
 			},
 		},
 		Err: &scene.BaseSceneError{Scene: &ErrorScene{ss.Game, ""}},
@@ -49,11 +61,14 @@ const nameParam = "Name"
 
 func (gns *GetNameScene) React(ctx *scene.Context) scene.Command {
 	ctx.Set(nameParam, ctx.Request.SearchedMessage)
+	id, err := gns.Game.Create(ctx.Context, ctx.Request.SearchedMessage)
+	log.Print(err)
+	SessionToId[ctx.Info.SessionId] = id
 	return scene.NoCommand
 }
 
 func (gns *GetNameScene) Next() scene.Scene {
-	return &HelloScene{gns.Game}
+	return &HelloScene{gns.Game, ""}
 }
 
 func (gns *GetNameScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
@@ -67,7 +82,8 @@ func (gns *GetNameScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type HelloScene struct {
-	Game client.LemonadeGameClient
+	Game   client.LemonadeGameClient
+	userId string
 }
 
 func (hs *HelloScene) React(_ *scene.Context) scene.Command {
@@ -75,10 +91,12 @@ func (hs *HelloScene) React(_ *scene.Context) scene.Command {
 }
 
 func (hs *HelloScene) Next() scene.Scene {
-	return &DayInfo{hs.Game, firstDay, startBalance, "", 0}
+	balance, _ := hs.Game.GetBalance(context.Background(), SessionToId[hs.userId])
+	return &DayInfo{hs.Game, firstDay, balance, "", 0}
 }
 
 func (hs *HelloScene) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
+	hs.userId = ctx.Info.SessionId
 	userName := ctx.GetString(nameParam)
 	return scene.Info{
 		Text: scene.Text{
@@ -214,7 +232,7 @@ func (pi *PriceInfo) React(ctx *scene.Context) scene.Command {
 
 func (pi *PriceInfo) Next() scene.Scene {
 	if pi.day == maxDay {
-		return &EndGame{pi.Game, pi.balance}
+		return &EndGame{pi.Game, pi.balance, 0, true}
 	}
 	return &EndOfDay{pi.Game, pi.balance, pi.profit, pi.day}
 }
@@ -231,23 +249,73 @@ func (pi *PriceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type EndGame struct {
-	Game    client.LemonadeGameClient
-	balance int64
+	Game     client.LemonadeGameClient
+	balance  int64
+	isEnd    int64
+	showSave bool
 }
 
-func (eg *EndGame) React(_ *scene.Context) scene.Command {
+func (eg *EndGame) React(ctx *scene.Context) scene.Command {
+	if ctx.Request.SearchedMessage == "Хочу посмотреть статистику" {
+		eg.isEnd = 0
+		return scene.StashScene
+	}
+	if ctx.Request.SearchedMessage == "Сохранить" {
+		eg.isEnd = 2
+		return scene.NoCommand
+	}
+	eg.isEnd = 1
 	return scene.FinishScene
 }
 
 func (eg *EndGame) Next() scene.Scene {
-	return &EndGame{eg.Game, eg.balance}
+	if eg.isEnd == 1 {
+		return &EndGame{eg.Game, eg.balance, 0, false}
+	} else if eg.isEnd == 2 {
+		return &SaveStatisticsScene{Game: eg.Game, balance: eg.balance}
+	} else {
+		return &StatisticsScene{Game: eg.Game}
+	}
 }
 
 func (eg *EndGame) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
+	if eg.showSave {
+		return scene.Info{
+			Text: scene.Text{
+				BaseText:     GetEndGameText(eg.balance),
+				TextToSpeech: GetEndGameTTS(eg.balance),
+			},
+			ExpectedMessages: []scene.MessageMatcher{
+				matchers.NewSelectorMatcher([]string{"Хочу посмотреть статистику", "статистику"},
+					"Хочу посмотреть статистику"),
+				matchers.NewSelectorMatcher([]string{"Хочу сохранить результат", "сохранить"},
+					"Сохранить"),
+				matchers.AnyMatcher,
+			},
+			Buttons: []scene.Button{
+				{
+					Title: "Хочу посмотреть статистику",
+				},
+				{
+					Title: "Сохранить",
+				},
+			},
+		}, true
+	}
 	return scene.Info{
 		Text: scene.Text{
 			BaseText:     GetEndGameText(eg.balance),
 			TextToSpeech: GetEndGameTTS(eg.balance),
+		},
+		ExpectedMessages: []scene.MessageMatcher{
+			matchers.NewSelectorMatcher([]string{"Хочу посмотреть статистику", "статистику"},
+				"Хочу посмотреть статистику"),
+			matchers.AnyMatcher,
+		},
+		Buttons: []scene.Button{
+			{
+				Title: "Хочу посмотреть статистику",
+			},
 		},
 	}, true
 }
@@ -321,4 +389,79 @@ func (es *ErrorScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 		BaseText:     "Я не знаю такую команду " + es.userText,
 		TextToSpeech: "Я не знаю такую команду" + es.userText,
 	}}, true
+}
+
+type StatisticsScene struct {
+	Game client.LemonadeGameClient
+}
+
+func (ss *StatisticsScene) React(ctx *scene.Context) scene.Command {
+	return scene.ApplyStashedScene
+}
+
+func (ss *StatisticsScene) Next() scene.Scene {
+	return &StatisticsScene{ss.Game}
+}
+
+func (ss *StatisticsScene) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
+	stats, _ := ss.Game.GetResult(ctx.Context, SessionToId[ctx.Info.SessionId])
+
+	statString := ""
+
+	for _, stat := range stats {
+		statString += stat.UserName + " - " + strconv.FormatInt(stat.Result, 10) + "\n"
+	}
+
+	return scene.Info{Text: scene.Text{
+		BaseText:     GetStatisticsText(statString),
+		TextToSpeech: GetStatisticsTTS(statString),
+	},
+		ExpectedMessages: []scene.MessageMatcher{matchers.Agree},
+		Buttons: []scene.Button{
+			{
+				Title: matchers.AgreeString,
+			},
+		},
+		Err: &scene.BaseSceneError{Scene: &ErrorScene{ss.Game, ""}},
+	}, true
+}
+
+type SaveStatisticsScene struct {
+	Game    client.LemonadeGameClient
+	balance int64
+	cont    bool
+}
+
+func (ss *SaveStatisticsScene) React(ctx *scene.Context) scene.Command {
+	ss.cont = true
+	if ctx.Request.SearchedMessage == matchers.AgreeString {
+		ss.cont = false
+		_ = ss.Game.SaveResult(ctx.Context, SessionToId[ctx.Info.SessionId], ss.balance)
+	}
+	return scene.NoCommand
+}
+
+func (ss *SaveStatisticsScene) Next() scene.Scene {
+	return &EndGame{ss.Game, ss.balance, 0, ss.cont}
+}
+
+func (ss *SaveStatisticsScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
+	return scene.Info{Text: scene.Text{
+		BaseText:     GetSaveStatisticsText(ss.balance),
+		TextToSpeech: GetSaveStatisticsTTS(ss.balance),
+	},
+		ExpectedMessages: []scene.MessageMatcher{
+			matchers.Agree,
+			matchers.NewSelectorMatcher([]string{"Неа", "Нет", "Не хочу"}, "Нет"),
+		},
+		Buttons: []scene.Button{
+			{
+				Title: matchers.AgreeString,
+			},
+			{
+				Title: "Нет",
+			},
+		},
+		Err: &scene.BaseSceneError{Scene: &ErrorScene{ss.Game, ""}},
+	}, true
 }

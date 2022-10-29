@@ -6,19 +6,16 @@ import (
 
 	"github.com/ThCompiler/go_game_constractor/director/matchers"
 	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/grpc/client"
+	client "github.com/evrone/go-clean-template/pkg/grpc/client/garden"
 )
 
 var SessionToId = make(map[string]string)
 
 type StartScene struct {
-	Game client.LemonadeGameClient
+	Game client.GardenGameClient
 }
 
 func (ss *StartScene) React(ctx *scene.Context) scene.Command {
-	id, err := ss.Game.Create(ctx.Context)
-	log.Print(err)
-	SessionToId[ctx.Info.SessionId] = id
 	return scene.NoCommand
 }
 
@@ -43,13 +40,16 @@ func (ss *StartScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type GetNameScene struct {
-	Game client.LemonadeGameClient
+	Game client.GardenGameClient
 }
 
 const nameParam = "Name"
 
 func (gns *GetNameScene) React(ctx *scene.Context) scene.Command {
 	ctx.Set(nameParam, ctx.Request.SearchedMessage)
+	id, err := gns.Game.Create(ctx.Context, ctx.Request.SearchedMessage)
+	log.Print(err)
+	SessionToId[ctx.Info.SessionId] = id
 	return scene.NoCommand
 }
 
@@ -68,7 +68,7 @@ func (gns *GetNameScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type HelloScene struct {
-	Game client.LemonadeGameClient
+	Game client.GardenGameClient
 }
 
 func (hs *HelloScene) React(_ *scene.Context) scene.Command {
@@ -92,7 +92,7 @@ func (hs *HelloScene) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 }
 
 type DayInfo struct {
-	Game    client.LemonadeGameClient
+	Game    client.GardenGameClient
 	Day     uint64
 	Balance int64
 	Weather string
@@ -128,7 +128,7 @@ func (gns *DayInfo) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 }
 
 type IceInfo struct {
-	Game client.LemonadeGameClient
+	Game client.GardenGameClient
 }
 
 const iceNumber = "iceNumber"
@@ -155,7 +155,7 @@ func (ii *IceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type AdjInfo struct {
-	Game client.LemonadeGameClient
+	Game client.GardenGameClient
 }
 
 const AdjNumber = "adjNumber"
@@ -182,7 +182,7 @@ func (ai *AdjInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type PriceInfo struct {
-	Game    client.LemonadeGameClient
+	Game    client.GardenGameClient
 	day     uint64
 	profit  int64
 	balance int64
@@ -232,7 +232,7 @@ func (pi *PriceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type EndGame struct {
-	Game    client.LemonadeGameClient
+	Game    client.GardenGameClient
 	balance int64
 }
 
@@ -254,7 +254,7 @@ func (eg *EndGame) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type EndOfDay struct {
-	Game    client.LemonadeGameClient
+	Game    client.GardenGameClient
 	balance int64
 	profit  int64
 	day     uint64
@@ -288,7 +288,7 @@ func (eod *EndOfDay) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 }
 
 type InitGoodByeScene struct {
-	Game client.LemonadeGameClient
+	Game client.GardenGameClient
 }
 
 func (igs *InitGoodByeScene) React(_ *scene.Context) scene.Command {
@@ -304,7 +304,7 @@ func (igs *InitGoodByeScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 }
 
 type ErrorScene struct {
-	Game     client.LemonadeGameClient
+	Game     client.GardenGameClient
 	userText string
 }
 

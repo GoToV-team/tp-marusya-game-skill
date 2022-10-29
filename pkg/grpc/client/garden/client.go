@@ -11,7 +11,7 @@ type GardenGameClient interface {
 	Create(ctx context.Context, username string) (string, error)
 	RandomWeather(ctx context.Context, userID string) (Weather, error)
 	GetBalance(ctx context.Context, userID string) (int64, error)
-	Calculate(ctx context.Context, data *DayParams) (DayResult, error)
+	Calculate(ctx context.Context, userID string, data *DayParams) (DayResult, error)
 	SaveResult(ctx context.Context, userID string, result int64) error
 	GetResult(ctx context.Context, userID string) ([]StatResult, error)
 }
