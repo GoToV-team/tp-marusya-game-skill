@@ -17,3 +17,8 @@ type DayResult struct {
 	Profit  int64
 	Day     int64
 }
+
+type StatResult struct {
+	UserName string
+	Result   int64
+}

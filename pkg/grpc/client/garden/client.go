@@ -8,10 +8,12 @@ import (
 )
 
 type GardenGameClient interface {
-	Create(ctx context.Context) (string, error)
+	Create(ctx context.Context, username string) (string, error)
 	RandomWeather(ctx context.Context, userID string) (Weather, error)
 	GetBalance(ctx context.Context, userID string) (int64, error)
 	Calculate(ctx context.Context, data *DayParams) (DayResult, error)
+	SaveResult(ctx context.Context, userID string, result int64) error
+	GetResult(ctx context.Context, userID string) ([]StatResult, error)
 }
 
 type GardenGame struct {
@@ -25,8 +27,10 @@ func NewBotanicalGardenGame(con *grpc.ClientConn) *GardenGame {
 	}
 }
 
-func (l *GardenGame) Create(ctx context.Context) (string, error) {
-	res, err := l.client.Create(ctx, &proto.Nothing{})
+func (l *GardenGame) Create(ctx context.Context, username string) (string, error) {
+	res, err := l.client.Create(ctx, &proto.User{
+		Username: username,
+	})
 	if err != nil {
 		return "", err
 	}
@@ -71,4 +75,37 @@ func (l *GardenGame) Calculate(ctx context.Context, userID string, data *DayPara
 		Profit:  res.Profit,
 		Day:     res.Day,
 	}, nil
+}
+
+func (l *GardenGame) SaveResult(ctx context.Context, userID string, result int64) error {
+	protoResultData := &proto.SaveResultMessage{
+		ID: &proto.GameID{
+			Id: userID,
+		},
+		Result: result,
+	}
+	_, err := l.client.SaveResult(ctx, protoResultData)
+
+	return err
+}
+func (l *GardenGame) GetResult(ctx context.Context, userID string) ([]StatResult, error) {
+	protoGameID := &proto.GameID{Id: userID}
+
+	res, err := l.client.GetResult(ctx, protoGameID)
+	if err != nil {
+		return []StatResult{}, err
+	}
+	return exported(res.Results), nil
+}
+
+func exported(data []*proto.Result) []StatResult {
+	res := make([]StatResult, 0, len(data))
+	for _, val := range data {
+		if val != nil {
+			res = append(res, StatResult{
+				Result: val.Result,
+			})
+		}
+	}
+	return res
 }
