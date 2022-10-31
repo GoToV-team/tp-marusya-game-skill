@@ -103,7 +103,8 @@ func exported(data []*proto.Result) []StatResult {
 	for _, val := range data {
 		if val != nil {
 			res = append(res, StatResult{
-				Result: val.Result,
+				UserName: val.Username,
+				Result:   val.Result,
 			})
 		}
 	}

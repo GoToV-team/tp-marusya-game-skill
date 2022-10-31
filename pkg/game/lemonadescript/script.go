@@ -404,8 +404,8 @@ func (ss *StatisticsScene) Next() scene.Scene {
 }
 
 func (ss *StatisticsScene) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
-	stats, _ := ss.Game.GetResult(ctx.Context, SessionToId[ctx.Info.SessionId])
-
+	stats, err := ss.Game.GetResult(ctx.Context, SessionToId[ctx.Info.SessionId])
+	print(err)
 	statString := ""
 
 	for _, stat := range stats {
