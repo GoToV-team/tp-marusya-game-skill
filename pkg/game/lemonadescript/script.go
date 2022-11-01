@@ -17,7 +17,7 @@ type StartScene struct {
 }
 
 func (ss *StartScene) React(ctx *scene.Context) scene.Command {
-	ss.IsStatistics = ctx.Request.SearchedMessage != matchers.AgreeString
+	ss.IsStatistics = ctx.Request.SearchedMessage != matchers.AnyMatchedString
 	if ss.IsStatistics {
 		return scene.StashScene
 	}
@@ -43,7 +43,7 @@ func (ss *StartScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			matchers.Agree},
 		Buttons: []scene.Button{
 			{
-				Title: matchers.AgreeString,
+				Title: matchers.AgreeMatchedString,
 			},
 			{
 				Title: "Хочу посмотреть статистику",
@@ -77,7 +77,7 @@ func (gns *GetNameScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     GetNameText,
 			TextToSpeech: GetNameTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.FirstWord},
+		ExpectedMessages: []scene.MessageMatcher{matchers.FirstWordMatcher},
 	}, true
 }
 
@@ -139,7 +139,7 @@ func (gns *DayInfo) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 			BaseText:     GetDayInfoText(gns.Day, gns.Balance, gns.Weather, gns.Chance),
 			TextToSpeech: GetDayInfoTTS(gns.Day, gns.Balance, gns.Weather, gns.Chance),
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, matchers.PositiveNumberInWordsMatcher},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -166,7 +166,7 @@ func (ii *IceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     IceInfoText,
 			TextToSpeech: IceInfoTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, matchers.PositiveNumberInWordsMatcher},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -193,7 +193,7 @@ func (ai *AdjInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     AdjInfoText,
 			TextToSpeech: AdjInfoTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, matchers.PositiveNumberInWordsMatcher},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -243,7 +243,7 @@ func (pi *PriceInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 			BaseText:     PriceText,
 			TextToSpeech: PriceTTS,
 		},
-		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, PositiveNumber},
+		ExpectedMessages: []scene.MessageMatcher{matchers.PositiveNumberMatcher, matchers.PositiveNumberInWordsMatcher},
 		Err:              &matchers.PositiveNumberError,
 	}, true
 }
@@ -347,7 +347,7 @@ func (eod *EndOfDay) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 		ExpectedMessages: []scene.MessageMatcher{matchers.Agree},
 		Buttons: []scene.Button{
 			{
-				Title: matchers.AgreeString,
+				Title: matchers.AgreeMatchedString,
 			},
 		},
 		Err: &scene.BaseSceneError{Scene: &ErrorScene{eod.Game, ""}},
@@ -419,7 +419,7 @@ func (ss *StatisticsScene) GetSceneInfo(ctx *scene.Context) (scene.Info, bool) {
 		ExpectedMessages: []scene.MessageMatcher{matchers.Agree},
 		Buttons: []scene.Button{
 			{
-				Title: matchers.AgreeString,
+				Title: matchers.AgreeMatchedString,
 			},
 		},
 		Err: &scene.BaseSceneError{Scene: &ErrorScene{ss.Game, ""}},
@@ -434,7 +434,7 @@ type SaveStatisticsScene struct {
 
 func (ss *SaveStatisticsScene) React(ctx *scene.Context) scene.Command {
 	ss.cont = true
-	if ctx.Request.SearchedMessage == matchers.AgreeString {
+	if ctx.Request.SearchedMessage == matchers.AgreeMatchedString {
 		ss.cont = false
 		_ = ss.Game.SaveResult(ctx.Context, SessionToId[ctx.Info.SessionId], ss.balance)
 	}
@@ -456,7 +456,7 @@ func (ss *SaveStatisticsScene) GetSceneInfo(_ *scene.Context) (scene.Info, bool)
 		},
 		Buttons: []scene.Button{
 			{
-				Title: matchers.AgreeString,
+				Title: matchers.AgreeMatchedString,
 			},
 			{
 				Title: "Нет",

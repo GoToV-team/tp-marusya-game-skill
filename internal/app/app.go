@@ -3,6 +3,11 @@ package app
 
 import (
 	"fmt"
+	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager/usecase"
+	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/script"
+	redis2 "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/store/redis"
+	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/store/storesaver"
+	"github.com/go-redis/redis/v8"
 	"os"
 	"os/signal"
 	"syscall"
@@ -46,21 +51,38 @@ func Run(cfg *config.Config) {
 	//	l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
 	//}
 
+	// Redis
+	opt, err := redis.ParseURL(cfg.Redis.URL)
+	if err != nil {
+		l.Fatal(fmt.Errorf("app - Run - redis - redis.New: %w", err))
+	}
+
+	rdb := redis.NewClient(opt)
+
+	// Repository
+	botanicStore := redis2.NewScriptRepository(rdb)
+
 	// GRPC
 	grpc, err := grpc2.NewGrpcConnection(cfg.GRPC.URL)
 	if err != nil {
 		l.Fatal(fmt.Errorf("app - Run - grpc - grpc.New: %w", err))
 	}
 
+	err = storesaver.SaveScripts(botanicStore)
+	if err != nil && err != storesaver.ScriptAlreadySaveError {
+		l.Fatal(fmt.Errorf("app - Run - store - saver.SaveStore: %w", err))
+	}
+
 	// HTTP Server
 
 	gameDirectorConfigLemonade := lemonadescript.NewLemonadeScript(lemonade.NewLemonadeGame(grpc))
 	gameDirectorConfigGarden := botanicalgardenscript.NewBotanicalGardenScript(garden.NewBotanicalGardenGame(grpc))
+	gameDirectorConfigBotanicGarden := script.NewBotanicalGardenGameScript(usecase.NewTextUsecase(botanicStore))
 
 	hub := hub.NewHub()
 
 	handler := gin.New()
-	v1.NewRouter(handler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, hub)
+	v1.NewRouter(handler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, gameDirectorConfigBotanicGarden, hub)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal

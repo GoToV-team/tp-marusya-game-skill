@@ -45,6 +45,18 @@ func newBotanicalGardenSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirect
 	handler.POST("/garden", r.wh.HandleFunc)
 }
 
+func newBotanicalGardenBaseSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
+	shub hub.ScriptRunner, l logger.Interface) {
+	r := &LemonadeSkillRoute{
+		sdc:  sdc,
+		shub: shub,
+		l:    l,
+	}
+	r.initWebhook()
+
+	handler.POST("/botanic", r.wh.HandleFunc)
+}
+
 func toMarusiaButtons(buttons []scene.Button) []marusia.Button {
 	res := make([]marusia.Button, 0)
 	for _, button := range buttons {

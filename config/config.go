@@ -9,12 +9,13 @@ import (
 type (
 	// Config -.
 	Config struct {
-		App  `yaml:"app"`
-		HTTP `yaml:"http"`
-		Log  `yaml:"logger"`
-		PG   `yaml:"postgres"`
-		RMQ  `yaml:"rabbitmq"`
-		GRPC `yaml:"grpc"`
+		App   `yaml:"app"`
+		HTTP  `yaml:"http"`
+		Log   `yaml:"logger"`
+		PG    `yaml:"postgres"`
+		RMQ   `yaml:"rabbitmq"`
+		GRPC  `yaml:"grpc"`
+		Redis `yaml:"redis"`
 	}
 
 	// App -.
@@ -40,7 +41,12 @@ type (
 		URL     string `env-required:"true"                 env:"PG_URL"`
 	}
 
-	// PG -.
+	// Redis -.
+	Redis struct {
+		URL string `env-required:"true"                 env:"REDIS_URL"`
+	}
+
+	// GRPC -.
 	GRPC struct {
 		URL string `env-required:"true"                 env:"GRPC_URL"`
 	}

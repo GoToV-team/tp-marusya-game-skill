@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/ThCompiler/go_game_constractor/pkg/convertor/words"
+	"github.com/ThCompiler/go_game_constractor/pkg/convertor/words/languages"
 	"github.com/evrone/go-clean-template/config"
 	"github.com/evrone/go-clean-template/internal/app"
-	"github.com/evrone/go-clean-template/pkg/convertor/words"
-	"github.com/evrone/go-clean-template/pkg/convertor/words/languages"
 	"log"
 )
 

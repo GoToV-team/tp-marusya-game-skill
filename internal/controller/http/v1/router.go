@@ -23,7 +23,14 @@ import (
 // @version     1.0
 // @host        localhost:8080
 // @BasePath    /v1
-func NewRouter(handler *gin.Engine, l logger.Interface, opLemonade game.SceneDirectorConfig, opGarden game.SceneDirectorConfig, hub *hub.ScriptHub) {
+func NewRouter(
+	handler *gin.Engine,
+	l logger.Interface,
+	opLemonade game.SceneDirectorConfig,
+	opGarden game.SceneDirectorConfig,
+	opBaseGarden game.SceneDirectorConfig,
+	hub *hub.ScriptHub,
+) {
 	// Options
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"http://localhost", "https://skill-debugger.marusia.mail.ru"}
@@ -50,5 +57,6 @@ func NewRouter(handler *gin.Engine, l logger.Interface, opLemonade game.SceneDir
 	{
 		newLemonadeSkillRoute(h, opLemonade, hub, l)
 		newBotanicalGardenSkillRoute(h, opGarden, hub, l)
+		newBotanicalGardenBaseSkillRoute(h, opBaseGarden, hub, l)
 	}
 }
