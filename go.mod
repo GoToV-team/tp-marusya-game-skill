@@ -6,7 +6,7 @@ require (
 	github.com/Conight/go-googletrans v0.0.0-20200929083318-176776d061cb
 	github.com/Eun/go-hit v0.5.23
 	github.com/Masterminds/squirrel v1.5.2
-	github.com/ThCompiler/go_game_constractor v0.1.2-alpha-1f04607
+	github.com/ThCompiler/go_game_constractor v0.1.3-alpha
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
@@ -24,7 +24,6 @@ require (
 	github.com/swaggo/swag v1.7.6
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.0
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -90,5 +89,6 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20211013025323-ce878158c4d4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 )
