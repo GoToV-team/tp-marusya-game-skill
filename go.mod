@@ -6,7 +6,7 @@ require (
 	github.com/Conight/go-googletrans v0.0.0-20200929083318-176776d061cb
 	github.com/Eun/go-hit v0.5.23
 	github.com/Masterminds/squirrel v1.5.2
-	github.com/ThCompiler/go_game_constractor v0.1.3-alpha
+	github.com/ThCompiler/go_game_constractor v0.1.3-alpha-ee22887
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5

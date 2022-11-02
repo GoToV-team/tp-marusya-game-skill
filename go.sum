@@ -115,6 +115,8 @@ github.com/ThCompiler/go_game_constractor v0.1.2-alpha-1f04607 h1:HZwOXsDC+eljRA
 github.com/ThCompiler/go_game_constractor v0.1.2-alpha-1f04607/go.mod h1:sqe9OmdaWVHrUgkjMkGUAwb5gXfb0IcCxxGz+JAKIzU=
 github.com/ThCompiler/go_game_constractor v0.1.3-alpha h1:rViHHUyFjxgfxJk4cbVwnFAKVlCteXGY2WHKs+SMmFA=
 github.com/ThCompiler/go_game_constractor v0.1.3-alpha/go.mod h1:sqe9OmdaWVHrUgkjMkGUAwb5gXfb0IcCxxGz+JAKIzU=
+github.com/ThCompiler/go_game_constractor v0.1.3-alpha-ee22887 h1:x0Vy138kmbQC+ANmFlAABidmbHB24mP6WDdV6ewCnpM=
+github.com/ThCompiler/go_game_constractor v0.1.3-alpha-ee22887/go.mod h1:sqe9OmdaWVHrUgkjMkGUAwb5gXfb0IcCxxGz+JAKIzU=
 github.com/aaw/maybe_tls v0.0.0-20160803104303-89c499bcc6aa h1:6yJyU8MlPBB2enGJdPciPlr8P+PC0nhCFHnSHYMirZI=
 github.com/aaw/maybe_tls v0.0.0-20160803104303-89c499bcc6aa/go.mod h1:I0wzMZvViQzmJjxK+AtfFAnqDCkQV/+r17PO1CCSYnU=
 github.com/agiledragon/gomonkey/v2 v2.3.1 h1:k+UnUY0EMNYUFUAQVETGY9uUTxjMdnUkP0ARyJS1zzs=

@@ -21,7 +21,7 @@ type Goodbye struct {
 
 // React function of actions after scene has been played
 func (sc *Goodbye) React(_ *scene.Context) scene.Command {
-	return scene.NoCommand
+	return scene.FinishScene
 }
 
 // Next function returning next scene
