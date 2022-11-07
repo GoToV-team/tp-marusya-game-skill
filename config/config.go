@@ -27,7 +27,8 @@ type (
 
 	// HTTP -.
 	HTTP struct {
-		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		Port       string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		MetricPort string `env-required:"true" yaml:"metric_port" env:"HTTP_METRIC_PORT"`
 	}
 
 	// Log -.

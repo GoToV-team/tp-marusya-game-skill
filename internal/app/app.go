@@ -30,33 +30,11 @@ import (
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
-	//// Repository
-	//pg, err := postgres.New(cfg.PG.URL, postgres.MaxPoolSize(cfg.PG.PoolMax))
-	//if err != nil {
-	//	l.Fatal(fmt.Errorf("app - Run - postgres.New: %w", err))
-	//}
-	//defer pg.Close()
-	//
-	//// Use case
-	//translationUseCase := usecase.New(
-	//	repo.New(pg),
-	//	webapi.New(),
-	//)
-	//
-	//// RabbitMQ RPC Server
-	//rmqRouter := amqprpc.NewRouter(translationUseCase)
-	//
-	//rmqServer, err := server.New(cfg.RMQ.URL, cfg.RMQ.ServerExchange, rmqRouter, l)
-	//if err != nil {
-	//	l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
-	//}
-
 	// Redis
 	opt, err := redis.ParseURL(cfg.Redis.URL)
 	if err != nil {
 		l.Fatal(fmt.Errorf("app - Run - redis - redis.New: %w", err))
 	}
-
 	rdb := redis.NewClient(opt)
 
 	// Repository
@@ -74,16 +52,18 @@ func Run(cfg *config.Config) {
 	}
 
 	// HTTP Server
-
 	gameDirectorConfigLemonade := lemonadescript.NewLemonadeScript(lemonade.NewLemonadeGame(grpc))
 	gameDirectorConfigGarden := botanicalgardenscript.NewBotanicalGardenScript(garden.NewBotanicalGardenGame(grpc))
 	gameDirectorConfigBotanicGarden := script.NewBotanicalGardenGameScript(usecase.NewTextUsecase(botanicStore))
 
 	hub := hub.NewHub()
 
-	handler := gin.New()
-	v1.NewRouter(handler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, gameDirectorConfigBotanicGarden, hub)
-	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
+	appHandler := gin.New()
+	metricHandler := gin.New()
+	v1.NewRouter(appHandler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, gameDirectorConfigBotanicGarden, hub)
+	v1.NewMetricRouter(metricHandler, appHandler)
+	httpServer := httpserver.New(appHandler, httpserver.Port(cfg.HTTP.Port))
+	httpMetricServer := httpserver.New(appHandler, httpserver.Port(cfg.HTTP.MetricPort))
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
@@ -96,6 +76,8 @@ func Run(cfg *config.Config) {
 		l.Info("app - Run - signal: " + s.String())
 	case err := <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
+	case err := <-httpMetricServer.Notify():
+		l.Error(fmt.Errorf("app - Run - httpMetricServer.Notify: %w", err))
 		//case err = <-rmqServer.Notify():
 		//	l.Error(fmt.Errorf("app - Run - rmqServer.Notify: %w", err))
 	}
@@ -107,9 +89,4 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
-
-	//err = rmqServer.Shutdown()
-	//if err != nil {
-	//	l.Error(fmt.Errorf("app - Run - rmqServer.Shutdown: %w", err))
-	//}
 }

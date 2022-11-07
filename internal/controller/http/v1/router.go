@@ -11,10 +11,27 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"github.com/penglongli/gin-metrics/ginmetrics"
+
 	// Swagger docs.
 	_ "github.com/evrone/go-clean-template/docs"
 	"github.com/evrone/go-clean-template/pkg/logger"
 )
+
+// NewMetricRouter -.
+// Swagger spec:
+// @title       Metric API
+// @description Metric api
+// @version     1.0
+// @host        localhost:8081
+// @BasePath    /
+func NewMetricRouter(handler *gin.Engine, appHandler *gin.Engine) {
+	m := ginmetrics.GetMonitor()
+	// use metric middleware without expose metric path
+	m.UseWithoutExposingEndpoint(appHandler)
+	// set metric path expose to metric router
+	m.Expose(handler)
+}
 
 // NewRouter -.
 // Swagger spec:
@@ -48,9 +65,6 @@ func NewRouter(
 	handler.GET("/healthz", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
-
-	//// Prometheus metrics
-	//handler.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	// Routers
 	h := handler.Group("/v1")
