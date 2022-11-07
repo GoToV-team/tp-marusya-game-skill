@@ -1,6 +1,5 @@
 currencies:
   number:
-    fractionalPartMinLength: 0
     currencyNameCases: ['целая', 'целых', 'целых']
     currencyNameDeclensions:
       nominative: ['целая', '']
@@ -21,7 +20,6 @@ currencies:
       integer: 'female'
       fractionalPart: 'female'
   rub:
-    fractionalPartMinLength: 2
     currencyNameCases: ['рубль', 'рубля', 'рублей']
     currencyNameDeclensions:
       nominative: ['рубль', '']
@@ -42,7 +40,6 @@ currencies:
       integer: 'male'
       fractionalPart: 'female'
   usd:
-    fractionalPartMinLength: 2
     currencyNameCases: ['доллар', 'доллара', 'долларов']
     currencyNameDeclensions:
       nominative: ['доллар', '']
@@ -63,7 +60,6 @@ currencies:
       integer: 'male'
       fractionalPart: 'male'
   eur:
-    fractionalPartMinLength: 2
     currencyNameCases: ['евро', 'евро', 'евро']
     currencyNameDeclensions:
       nominative: ['евро', '']

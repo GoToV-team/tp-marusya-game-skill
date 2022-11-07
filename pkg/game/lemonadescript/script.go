@@ -17,7 +17,13 @@ type StartScene struct {
 }
 
 func (ss *StartScene) React(ctx *scene.Context) scene.Command {
-	ss.IsStatistics = ctx.Request.SearchedMessage != matchers.AnyMatchedString
+	switch {
+	case ctx.Request.NameMatched == matchers.AgreeMatchedString:
+		ss.IsStatistics = false
+	default:
+		ss.IsStatistics = true
+	}
+
 	if ss.IsStatistics {
 		return scene.StashScene
 	}
@@ -256,11 +262,13 @@ type EndGame struct {
 }
 
 func (eg *EndGame) React(ctx *scene.Context) scene.Command {
-	if ctx.Request.SearchedMessage == "Хочу посмотреть статистику" {
+	if ctx.Request.NameMatched == "Хочу посмотреть статистику" ||
+		ctx.Request.SearchedMessage == "Хочу посмотреть статистику" {
 		eg.isEnd = 0
 		return scene.StashScene
 	}
-	if ctx.Request.SearchedMessage == "Сохранить" {
+	if ctx.Request.NameMatched == "Сохранить" ||
+		ctx.Request.SearchedMessage == "Сохранить" {
 		eg.isEnd = 2
 		return scene.NoCommand
 	}
@@ -434,7 +442,7 @@ type SaveStatisticsScene struct {
 
 func (ss *SaveStatisticsScene) React(ctx *scene.Context) scene.Command {
 	ss.cont = true
-	if ctx.Request.SearchedMessage == matchers.AgreeMatchedString {
+	if ctx.Request.NameMatched == matchers.AgreeMatchedString {
 		ss.cont = false
 		_ = ss.Game.SaveResult(ctx.Context, SessionToId[ctx.Info.SessionId], ss.balance)
 	}
