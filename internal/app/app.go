@@ -60,10 +60,10 @@ func Run(cfg *config.Config) {
 
 	appHandler := gin.New()
 	metricHandler := gin.New()
-	v1.NewRouter(appHandler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, gameDirectorConfigBotanicGarden, hub)
 	v1.NewMetricRouter(metricHandler, appHandler)
+	v1.NewRouter(appHandler, l, gameDirectorConfigLemonade, gameDirectorConfigGarden, gameDirectorConfigBotanicGarden, hub)
 	httpServer := httpserver.New(appHandler, httpserver.Port(cfg.HTTP.Port))
-	httpMetricServer := httpserver.New(appHandler, httpserver.Port(cfg.HTTP.MetricPort))
+	httpMetricServer := httpserver.New(metricHandler, httpserver.Port(cfg.HTTP.MetricPort))
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)

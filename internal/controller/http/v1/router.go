@@ -29,6 +29,8 @@ func NewMetricRouter(handler *gin.Engine, appHandler *gin.Engine) {
 	m := ginmetrics.GetMonitor()
 	// use metric middleware without expose metric path
 	m.UseWithoutExposingEndpoint(appHandler)
+
+	m.SetMetricPath("/metrics")
 	// set metric path expose to metric router
 	m.Expose(handler)
 }
