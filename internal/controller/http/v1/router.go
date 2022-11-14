@@ -58,6 +58,7 @@ func NewRouter(
 	handler.Use(cors.New(corsConfig))
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
+	handler.Use(logger.RequestLogger)
 
 	// Swagger
 	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
