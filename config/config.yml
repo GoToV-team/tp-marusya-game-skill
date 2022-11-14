@@ -5,7 +5,7 @@ app:
 
 http:
   port: '8080'
-  metric_port: '8081'
+  metric_port: '8082'
 
 logger:
   log_level: 'debug'

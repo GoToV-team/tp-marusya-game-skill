@@ -5,17 +5,27 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 )
 
 func RequestLogger(c *gin.Context) {
 	defer c.Next()
 
-	tmp := json.RawMessage{}
-	err := c.ShouldBindJSON(&tmp)
+	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		fmt.Printf(err.Error() + "\n")
 		return
 	}
+
+	tmp := json.RawMessage{}
+	err = json.Unmarshal(body, &tmp)
+	if err != nil {
+		fmt.Printf(err.Error() + "\n")
+		return
+	}
+
+	c.Request.Body = io.NopCloser(bytes.NewReader(body))
+
 	req := ""
 	buf := bytes.NewBufferString(req)
 

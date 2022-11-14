@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "client_id": "MailRu-VC/1.0",
+    "locale": "ru_RU",
+    "timezone": "Europe/Moscow",
+    "interfaces": {
+      "screen": {},
+      "audio_player": {}
+    },
+    "_city_ru": "Москва"
+  },
+  "request": {
+    "command": "debug",
+    "original_utterance": "debug",
+    "type": "SimpleUtterance",
+    "nlu": {
+      "tokens": [
+        "debug"
+      ],
+      "entities": []
+    }
+  },
+  "session": {
+    "session_id": "485ddd22-35af-436b-a572-3c34e6f25837",
+    "user_id": "7ef76e69f557142caae59d07a89febb44e3a238218da185f126b26a33302b19f",
+    "skill_id": "52401ef1-935a-49ef-bd57-1f3f83ac3447",
+    "new": false,
+    "message_id": 1,
+    "user": {
+      "user_id": "38630ed4-f3e7-4cdc-8e24-f107fed68dc1"
+    },
+    "application": {
+      "application_id": "7ef76e69f557142caae59d07a89febb44e3a238218da185f126b26a33302b19f",
+      "application_type": "mobile"
+    },
+    "auth_token": "636d5f7d6fb18e1aff48bb161ab82de12012fec213a0bf2e9a9efd8b7825c69c"
+  },
+  "state": {
+    "session": {},
+    "user": {}
+  },
+  "version": "1.0"
+}
