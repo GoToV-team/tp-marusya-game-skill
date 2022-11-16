@@ -9,21 +9,21 @@
 package script
 
 import (
-	game "github.com/ThCompiler/go_game_constractor/director"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/scenes"
+    game "github.com/ThCompiler/go_game_constractor/director/scriptdirector"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/scenes"
 )
 
 const GoodByeCommand = "Пока"
 
 func NewLemonadeGameScript(manager manager.TextManager) game.SceneDirectorConfig {
-	return game.SceneDirectorConfig{
-		StartScene: &scenes.Hello{
-			TextManager: manager,
-		},
-		GoodbyeScene: &scenes.Goodbye{
-			TextManager: manager,
-		},
-		EndCommand: GoodByeCommand,
-	}
+    return game.SceneDirectorConfig{
+        StartScene: &scenes.Hello{
+            TextManager: manager,
+        },
+        GoodbyeScene: &scenes.Goodbye{
+            TextManager: manager,
+        },
+        EndCommand: GoodByeCommand,
+    }
 }

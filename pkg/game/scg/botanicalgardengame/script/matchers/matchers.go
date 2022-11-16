@@ -8,112 +8,112 @@
 
 package matchers
 
-import "github.com/ThCompiler/go_game_constractor/director/matchers"
+import "github.com/ThCompiler/go_game_constractor/director/scriptdirector/matchers"
 
 // replace string for SelectsMatchers
 const (
-	BuyDropsMatchedString = "Вода"
+    BuyDropsMatchedString = "Вода"
 
-	BuyGreenhouseMatchedString = "Теплица"
+    BuyGreenhouseMatchedString = "Теплица"
 
-	BuyFlyMatchedString = "Ветер"
+    BuyFlyMatchedString = "Ветер"
 
-	BuyBugsMatchedString = "Жуки"
+    BuyBugsMatchedString = "Жуки"
 
-	BuyHealMatchedString = "Аптечка"
+    BuyHealMatchedString = "Аптечка"
 
-	EndShopMatchedString = "Выйти"
+    EndShopMatchedString = "Выйти"
 
-	BackMatchedString = "Назад"
+    BackMatchedString = "Назад"
 )
 
 // SelectsMatchers
 var (
-	BuyDropsMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Хочу купить капельки",
-			"Капельки",
-			"Купить капельки",
-			"Купить капли",
-			"Капли",
-			"Воду",
-			"Хочу купить воду",
-			"Хочу купить капли",
-			"Купить воду",
-			"Вода",
-		},
-		BuyDropsMatchedString,
-	)
+    BuyDropsMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Хочу купить капельки",
+            "Капельки",
+            "Купить капельки",
+            "Купить капли",
+            "Капли",
+            "Воду",
+            "Хочу купить воду",
+            "Хочу купить капли",
+            "Купить воду",
+            "Вода",
+        },
+        BuyDropsMatchedString,
+    )
 
-	BuyGreenhouseMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Хочу купить теплицу",
-			"Теплицу",
-			"Купить теплицу",
-			"Теплица",
-		},
-		BuyGreenhouseMatchedString,
-	)
+    BuyGreenhouseMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Хочу купить теплицу",
+            "Теплицу",
+            "Купить теплицу",
+            "Теплица",
+        },
+        BuyGreenhouseMatchedString,
+    )
 
-	BuyFlyMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Хочу купить защиту от ветра",
-			"Ветра",
-			"Ветер",
-			"Купить защиту от ветра",
-			"Защиту от ветра",
-			"Защита от ветра",
-		},
-		BuyFlyMatchedString,
-	)
+    BuyFlyMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Хочу купить защиту от ветра",
+            "Ветра",
+            "Ветер",
+            "Купить защиту от ветра",
+            "Защиту от ветра",
+            "Защита от ветра",
+        },
+        BuyFlyMatchedString,
+    )
 
-	BuyBugsMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Хочу купить отраву",
-			"Отрава",
-			"Яд",
-			"Купить отраву",
-			"Отраву",
-			"Хочу купить Яд",
-			"Купить Яд",
-			"Хочу купить защиту от жуков",
-			"Жуки",
-			"Жук",
-			"Купить защиту от жуков",
-			"Защиту от жуков",
-			"Защита от жуков",
-		},
-		BuyBugsMatchedString,
-	)
+    BuyBugsMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Хочу купить отраву",
+            "Отрава",
+            "Яд",
+            "Купить отраву",
+            "Отраву",
+            "Хочу купить Яд",
+            "Купить Яд",
+            "Хочу купить защиту от жуков",
+            "Жуки",
+            "Жук",
+            "Купить защиту от жуков",
+            "Защиту от жуков",
+            "Защита от жуков",
+        },
+        BuyBugsMatchedString,
+    )
 
-	BuyHealMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Хочу купить аптечку",
-			"Аптечка",
-			"Купить аптечку",
-			"Аптечку",
-		},
-		BuyHealMatchedString,
-	)
+    BuyHealMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Хочу купить аптечку",
+            "Аптечка",
+            "Купить аптечку",
+            "Аптечку",
+        },
+        BuyHealMatchedString,
+    )
 
-	EndShopMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Я закончил",
-			"Хватит покупок",
-			"Следующий день",
-			"Закончить покупки",
-			"Выйти",
-		},
-		EndShopMatchedString,
-	)
+    EndShopMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Я закончил",
+            "Хватит покупок",
+            "Следующий день",
+            "Закончить покупки",
+            "Выйти",
+        },
+        EndShopMatchedString,
+    )
 
-	BackMatcher = matchers.NewSelectorMatcher(
-		[]string{
-			"Я передумал",
-			"Назад",
-			"Отмена",
-			"Не хочу",
-		},
-		BackMatchedString,
-	)
+    BackMatcher = matchers.NewSelectorMatcher(
+        []string{
+            "Я передумал",
+            "Назад",
+            "Отмена",
+            "Не хочу",
+        },
+        BackMatchedString,
+    )
 )

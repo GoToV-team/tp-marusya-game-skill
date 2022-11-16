@@ -7,33 +7,37 @@
       "screen": {},
       "audio_player": {}
     },
-    "_city_ru": "Москва"
+    "_city_ru": "\u0421\u0430\u043d\u043a\u0442-\u041f\u0435\u0442\u0435\u0440\u0431\u0443\u0440\u0433"
   },
   "request": {
-    "command": "debug",
-    "original_utterance": "debug",
+    "command": "\u0437\u0430\u043f\u0443\u0441\u0442\u0438 \u043d\u0430\u0432\u044b\u043a \u043b\u0438\u043c\u043e\u043d\u0430\u0434\u043d\u0430\u044f \u0441\u0442\u043e\u0439\u043a\u0430",
+    "original_utterance": "\u0437\u0430\u043f\u0443\u0441\u0442\u0438 \u043d\u0430\u0432\u044b\u043a \u043b\u0438\u043c\u043e\u043d\u0430\u0434\u043d\u0430\u044f \u0441\u0442\u043e\u0439\u043a\u0430",
     "type": "SimpleUtterance",
     "nlu": {
       "tokens": [
-        "debug"
+        "\u0437\u0430\u043f\u0443\u0441\u0442\u0438",
+        "\u043d\u0430\u0432\u044b\u043a",
+        "\u043b\u0438\u043c\u043e\u043d\u0430\u0434\u043d\u0430\u044f",
+        "\u0441\u0442\u043e\u0439\u043a\u0430"
       ],
       "entities": []
     }
   },
   "session": {
-    "session_id": "485ddd22-35af-436b-a572-3c34e6f25837",
-    "user_id": "7ef76e69f557142caae59d07a89febb44e3a238218da185f126b26a33302b19f",
-    "skill_id": "52401ef1-935a-49ef-bd57-1f3f83ac3447",
-    "new": false,
-    "message_id": 1,
+    "session_id": "79891f71-dd57-4f17-8026-4165a992c57f",
+    "user_id": "84d3a9dfadfce7a6ef6072bed0d2357971d21a5587cd4d77923e9aad4065d690",
+    "skill_id": "e3921ac6-5852-4652-8f04-bd89ef53c8d5",
+    "new": true,
+    "message_id": 0,
     "user": {
-      "user_id": "38630ed4-f3e7-4cdc-8e24-f107fed68dc1"
+      "user_id": "008ea6c30ad1097f6f8dc8b332ee67f5e4373615a6466f0a06e53cbd1475ec29",
+      "user_vk_id": 182622150
     },
     "application": {
-      "application_id": "7ef76e69f557142caae59d07a89febb44e3a238218da185f126b26a33302b19f",
-      "application_type": "mobile"
+      "application_id": "84d3a9dfadfce7a6ef6072bed0d2357971d21a5587cd4d77923e9aad4065d690",
+      "application_type": "vk"
     },
-    "auth_token": "636d5f7d6fb18e1aff48bb161ab82de12012fec213a0bf2e9a9efd8b7825c69c"
+    "auth_token": "410231084193c19e0a8eaa05243788a013f8dd3bdb82b3e93add398521ad78e6"
   },
   "state": {
     "session": {},

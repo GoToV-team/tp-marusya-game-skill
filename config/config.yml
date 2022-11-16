@@ -5,10 +5,13 @@ app:
 
 http:
   port: '8080'
-  metric_port: '8082'
+  metric_port: '8081'
 
 logger:
-  log_level: 'debug'
+  level: 'debug'
+  log_dir: './app-log'
+  use_std_and_file: true
+  add_low_priority_level_to_cmd: true
   rollbar_env: 'go-clean-template'
 
 postgres:

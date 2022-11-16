@@ -9,35 +9,36 @@
 package scenes
 
 import (
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
+    "github.com/ThCompiler/go_game_constractor/director"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
 )
 
 // HealInfo scene
 type HealInfo struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *HealInfo) React(_ *scene.Context) scene.Command {
-	return scene.NoCommand
+    return scene.NoCommand
 }
 
 // Next function returning next scene
 func (sc *HealInfo) Next() scene.Scene {
-	return &Shop{
-		TextManager: sc.TextManager,
-	}
+    return &Shop{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *HealInfo) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 
-	text, _ := sc.TextManager.GetHealInfoText()
-	return scene.Info{
-		Text:             text,
-		ExpectedMessages: []scene.MessageMatcher{},
-		Buttons:          []scene.Button{},
-	}, false
+    text, _ := sc.TextManager.GetHealInfoText()
+    return scene.Info{
+        Text:             text,
+        ExpectedMessages: []scene.MessageMatcher{},
+        Buttons:          []director.Button{},
+    }, false
 }

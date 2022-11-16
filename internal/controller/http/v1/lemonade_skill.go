@@ -1,111 +1,56 @@
 package v1
 
 import (
-	"time"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector"
+    "github.com/ThCompiler/go_game_constractor/marusia/runner"
+    "github.com/ThCompiler/go_game_constractor/marusia/webhook"
+    "github.com/ThCompiler/go_game_constractor/pkg/logger/http"
 
-	game "github.com/ThCompiler/go_game_constractor/director"
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/ThCompiler/go_game_constractor/marusia"
-	"github.com/ThCompiler/go_game_constractor/marusia/hub"
-	"github.com/gin-gonic/gin"
+    "github.com/ThCompiler/go_game_constractor/marusia"
+    "github.com/gin-gonic/gin"
 
-	"github.com/evrone/go-clean-template/pkg/logger"
+    "github.com/ThCompiler/go_game_constractor/pkg/logger"
 )
 
-const RequestTime = 60 * time.Second
-
 type LemonadeSkillRoute struct {
-	sdc  game.SceneDirectorConfig
-	shub hub.ScriptRunner
-	l    logger.Interface
-	wh   *marusia.Webhook
+    http.LogObject
+    sdc  scriptdirector.SceneDirectorConfig
+    shub runner.ScriptRunner
+    wh   *marusia.Webhook
 }
 
-func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
-	shub hub.ScriptRunner, l logger.Interface) {
-	r := &LemonadeSkillRoute{
-		sdc:  sdc,
-		shub: shub,
-		l:    l,
-	}
-	r.initWebhook()
+func newLemonadeSkillRoute(handler *gin.RouterGroup, sdc scriptdirector.SceneDirectorConfig,
+    shub runner.ScriptRunner, l logger.Interface) {
+    r := &LemonadeSkillRoute{
+        LogObject: http.NewLogObject(l),
+        sdc:       sdc,
+        shub:      shub,
+        wh:        webhook.NewDefaultMarusiaWebhook(l, shub, sdc),
+    }
 
-	handler.POST("/lemonade", r.wh.HandleFunc)
+    handler.POST("/lemonade", r.wh.GinHandleFunc)
 }
 
-func newBotanicalGardenSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
-	shub hub.ScriptRunner, l logger.Interface) {
-	r := &LemonadeSkillRoute{
-		sdc:  sdc,
-		shub: shub,
-		l:    l,
-	}
-	r.initWebhook()
+func newBotanicalGardenSkillRoute(handler *gin.RouterGroup, sdc scriptdirector.SceneDirectorConfig,
+    shub runner.ScriptRunner, l logger.Interface) {
+    r := &LemonadeSkillRoute{
+        LogObject: http.NewLogObject(l),
+        sdc:       sdc,
+        shub:      shub,
+        wh:        webhook.NewDefaultMarusiaWebhook(l, shub, sdc),
+    }
 
-	handler.POST("/garden", r.wh.HandleFunc)
+    handler.POST("/garden", r.wh.GinHandleFunc)
 }
 
-func newBotanicalGardenBaseSkillRoute(handler *gin.RouterGroup, sdc game.SceneDirectorConfig,
-	shub hub.ScriptRunner, l logger.Interface) {
-	r := &LemonadeSkillRoute{
-		sdc:  sdc,
-		shub: shub,
-		l:    l,
-	}
-	r.initWebhook()
+func newBotanicalGardenBaseSkillRoute(handler *gin.RouterGroup, sdc scriptdirector.SceneDirectorConfig,
+    shub runner.ScriptRunner, l logger.Interface) {
+    r := &LemonadeSkillRoute{
+        LogObject: http.NewLogObject(l),
+        sdc:       sdc,
+        shub:      shub,
+        wh:        webhook.NewDefaultMarusiaWebhook(l, shub, sdc),
+    }
 
-	handler.POST("/botanic", r.wh.HandleFunc)
-}
-
-func toMarusiaButtons(buttons []scene.Button) []marusia.Button {
-	res := make([]marusia.Button, 0)
-	for _, button := range buttons {
-		res = append(res, marusia.Button{
-			Title:   button.Title,
-			URL:     button.URL,
-			Payload: button.Payload,
-		})
-	}
-	return res
-}
-
-func (ls *LemonadeSkillRoute) initWebhook() {
-	ls.wh = marusia.NewWebhook(ls.l)
-
-	ls.wh.OnEvent(func(r marusia.Request) (resp marusia.Response, err error) {
-		err = nil
-
-		if r.Request.Command == marusia.OnStart || r.Request.Command == "debug" {
-			ls.shub.AttachDirector(r.Session.SessionID, game.NewScriptDirector(ls.sdc))
-		}
-
-		ans := ls.shub.RunScene(r)
-
-		ticker := time.NewTicker(RequestTime)
-		select {
-		case answer, ok := <-ans:
-			if ok {
-				resp.Text = answer.Text.BaseText
-				resp.TTS = answer.Text.TextToSpeech
-				resp.EndSession = answer.IsEndOfScript
-				resp.Buttons = toMarusiaButtons(answer.Buttons)
-
-				if answer.IsEndOfScript {
-					answer.WorkedDirector.Close()
-				}
-			} else {
-				err = BadDirectorAnswer
-			}
-			break
-		case <-ticker.C:
-			err = TooLongRunning
-			break
-		}
-		ticker.Stop()
-
-		if err != nil {
-			ls.l.Error(err)
-		}
-		return
-	})
+    handler.POST("/botanic", r.wh.GinHandleFunc)
 }

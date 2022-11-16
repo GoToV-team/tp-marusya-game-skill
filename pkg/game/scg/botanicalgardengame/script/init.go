@@ -9,21 +9,21 @@
 package script
 
 import (
-	game "github.com/ThCompiler/go_game_constractor/director"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/script/scenes"
+    game "github.com/ThCompiler/go_game_constractor/director/scriptdirector"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/script/scenes"
 )
 
 const GoodByeCommand = "Пока"
 
 func NewBotanicalGardenGameScript(manager manager.TextManager) game.SceneDirectorConfig {
-	return game.SceneDirectorConfig{
-		StartScene: &scenes.Hello{
-			TextManager: manager,
-		},
-		GoodbyeScene: &scenes.Goodbye{
-			TextManager: manager,
-		},
-		EndCommand: GoodByeCommand,
-	}
+    return game.SceneDirectorConfig{
+        StartScene: &scenes.Hello{
+            TextManager: manager,
+        },
+        GoodbyeScene: &scenes.Goodbye{
+            TextManager: manager,
+        },
+        EndCommand: GoodByeCommand,
+    }
 }

@@ -9,74 +9,75 @@
 package scenes
 
 import (
-	base_matchers "github.com/ThCompiler/go_game_constractor/director/matchers"
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/errors"
+    "github.com/ThCompiler/go_game_constractor/director"
+    base_matchers "github.com/ThCompiler/go_game_constractor/director/scriptdirector/matchers"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/errors"
 )
 
 const (
-	// AgreeEndGameButtonText - text for button Agree
-	AgreeEndGameButtonText = "Понятно"
+    // AgreeEndGameButtonText - text for button Agree
+    AgreeEndGameButtonText = "Понятно"
 )
 
 // EndGame scene
 type EndGame struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *EndGame) React(ctx *scene.Context) scene.Command {
-	// TODO Write the actions after EndGame scene has been played
-	switch {
-	// Buttons select
-	case ctx.Request.NameMatched == AgreeEndGameButtonText && ctx.Request.WasButton:
+    // TODO Write the actions after EndGame scene has been played
+    switch {
+    // Buttons select
+    case ctx.Request.NameMatched == AgreeEndGameButtonText && ctx.Request.WasButton:
 
-		// Matcher select
-	case ctx.Request.NameMatched == base_matchers.AgreeMatchedString:
+        // Matcher select
+    case ctx.Request.NameMatched == base_matchers.AgreeMatchedString:
 
-	}
+    }
 
-	sc.NextScene = EndGameScene // TODO: manually set next scene after reaction
-	return scene.NoCommand
+    sc.NextScene = EndGameScene // TODO: manually set next scene after reaction
+    return scene.NoCommand
 }
 
 // Next function returning next scene
 func (sc *EndGame) Next() scene.Scene {
-	switch sc.NextScene {
-	case ShopScene:
-		return &Shop{
-			TextManager: sc.TextManager,
-		}
-	}
+    switch sc.NextScene {
+    case ShopScene:
+        return &Shop{
+            TextManager: sc.TextManager,
+        }
+    }
 
-	return &EndGame{
-		TextManager: sc.TextManager,
-	}
+    return &EndGame{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *EndGame) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
-	var (
-		score uint64
-	)
+    var (
+        score uint64
+    )
 
-	// TODO Write some actions for get data for texts
+    // TODO Write some actions for get data for texts
 
-	text, _ := sc.TextManager.GetEndGameText(
-		score,
-	)
-	return scene.Info{
-		Text: text,
-		ExpectedMessages: []scene.MessageMatcher{
-			base_matchers.Agree,
-		},
-		Buttons: []scene.Button{
-			{
-				Title: AgreeEndGameButtonText,
-			},
-		},
-		Err: errors.NotUnderstandEndGameError,
-	}, true
+    text, _ := sc.TextManager.GetEndGameText(
+        score,
+    )
+    return scene.Info{
+        Text: text,
+        ExpectedMessages: []scene.MessageMatcher{
+            base_matchers.Agree,
+        },
+        Buttons: []director.Button{
+            {
+                Title: AgreeEndGameButtonText,
+            },
+        },
+        Err: errors.NotUnderstandEndGameError,
+    }, true
 }

@@ -9,89 +9,90 @@
 package scenes
 
 import (
-	base_matchers "github.com/ThCompiler/go_game_constractor/director/matchers"
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/errors"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/matchers"
+    "github.com/ThCompiler/go_game_constractor/director"
+    base_matchers "github.com/ThCompiler/go_game_constractor/director/scriptdirector/matchers"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/errors"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/matchers"
 )
 
 const (
-	// AgreeBugsSaleButtonText - text for button Agree
-	AgreeBugsSaleButtonText = "Ага"
-	// BackBugsSaleButtonText - text for button Back
-	BackBugsSaleButtonText = "Нет"
+    // AgreeBugsSaleButtonText - text for button Agree
+    AgreeBugsSaleButtonText = "Ага"
+    // BackBugsSaleButtonText - text for button Back
+    BackBugsSaleButtonText = "Нет"
 )
 
 // BugsSale scene
 type BugsSale struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *BugsSale) React(ctx *scene.Context) scene.Command {
-	// TODO Write the actions after BugsSale scene has been played
-	switch {
-	// Buttons select
-	case ctx.Request.NameMatched == AgreeBugsSaleButtonText && ctx.Request.WasButton:
+    // TODO Write the actions after BugsSale scene has been played
+    switch {
+    // Buttons select
+    case ctx.Request.NameMatched == AgreeBugsSaleButtonText && ctx.Request.WasButton:
 
-	case ctx.Request.NameMatched == BackBugsSaleButtonText && ctx.Request.WasButton:
+    case ctx.Request.NameMatched == BackBugsSaleButtonText && ctx.Request.WasButton:
 
-		// Matcher select
-	case ctx.Request.NameMatched == base_matchers.AgreeMatchedString:
+        // Matcher select
+    case ctx.Request.NameMatched == base_matchers.AgreeMatchedString:
 
-	case ctx.Request.NameMatched == matchers.BackMatchedString:
+    case ctx.Request.NameMatched == matchers.BackMatchedString:
 
-	}
+    }
 
-	sc.NextScene = BugsSaleScene // TODO: manually set next scene after reaction
-	return scene.NoCommand
+    sc.NextScene = BugsSaleScene // TODO: manually set next scene after reaction
+    return scene.NoCommand
 }
 
 // Next function returning next scene
 func (sc *BugsSale) Next() scene.Scene {
-	switch sc.NextScene {
-	case ShopScene:
-		return &Shop{
-			TextManager: sc.TextManager,
-		}
-	case BugsInfoScene:
-		return &BugsInfo{
-			TextManager: sc.TextManager,
-		}
-	}
+    switch sc.NextScene {
+    case ShopScene:
+        return &Shop{
+            TextManager: sc.TextManager,
+        }
+    case BugsInfoScene:
+        return &BugsInfo{
+            TextManager: sc.TextManager,
+        }
+    }
 
-	return &BugsSale{
-		TextManager: sc.TextManager,
-	}
+    return &BugsSale{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *BugsSale) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
-	var (
-		bugsCost uint64
-	)
+    var (
+        bugsCost uint64
+    )
 
-	// TODO Write some actions for get data for texts
+    // TODO Write some actions for get data for texts
 
-	text, _ := sc.TextManager.GetBugsSaleText(
-		bugsCost,
-	)
-	return scene.Info{
-		Text: text,
-		ExpectedMessages: []scene.MessageMatcher{
-			base_matchers.Agree,
-			matchers.BackMatcher,
-		},
-		Buttons: []scene.Button{
-			{
-				Title: AgreeBugsSaleButtonText,
-			},
-			{
-				Title: BackBugsSaleButtonText,
-			},
-		},
-		Err: errors.NotUnderstandBugsSaleError,
-	}, true
+    text, _ := sc.TextManager.GetBugsSaleText(
+        bugsCost,
+    )
+    return scene.Info{
+        Text: text,
+        ExpectedMessages: []scene.MessageMatcher{
+            base_matchers.Agree,
+            matchers.BackMatcher,
+        },
+        Buttons: []director.Button{
+            {
+                Title: AgreeBugsSaleButtonText,
+            },
+            {
+                Title: BackBugsSaleButtonText,
+            },
+        },
+        Err: errors.NotUnderstandBugsSaleError,
+    }, true
 }

@@ -9,451 +9,451 @@
 package usecase
 
 import (
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	consts "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/consts/textsname"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/pkg/str"
-	store "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/store"
+    "github.com/ThCompiler/go_game_constractor/director"
+    consts "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/consts/textsname"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/pkg/str"
+    store "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/store"
 )
 
 type TextUsecase struct {
-	store store.ScriptStore
+    store store.ScriptStore
 }
 
 func NewTextUsecase(store store.ScriptStore) *TextUsecase {
-	return &TextUsecase{
-		store: store,
-	}
+    return &TextUsecase{
+        store: store,
+    }
 }
 
 // GetApproveEndDayText get text for approveEndDay scene with variables
-func (tu *TextUsecase) GetApproveEndDayText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.ApproveEndDayText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetApproveEndDayText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.ApproveEndDayText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.ApproveEndDayTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.ApproveEndDayTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetBugsInfoText get text for bugsInfo scene with variables
-func (tu *TextUsecase) GetBugsInfoText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.BugsInfoText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetBugsInfoText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.BugsInfoText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.BugsInfoTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.BugsInfoTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetBugsSaleText get text for bugsSale scene with variables
-func (tu *TextUsecase) GetBugsSaleText(bugsCost uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.BugsSaleText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetBugsSaleText(bugsCost uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.BugsSaleText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.BugsSaleTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.BugsSaleTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"bugsCost", bugsCost,
-	}
+    args := []interface{}{
+        "bugsCost", bugsCost,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetDropsInfoText get text for dropsInfo scene with variables
-func (tu *TextUsecase) GetDropsInfoText(dropsCount uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.DropsInfoText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetDropsInfoText(dropsCount uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.DropsInfoText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.DropsInfoTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.DropsInfoTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"dropsCount", dropsCount,
-	}
+    args := []interface{}{
+        "dropsCount", dropsCount,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetDropsSaleText get text for dropsSale scene with variables
-func (tu *TextUsecase) GetDropsSaleText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.DropsSaleText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetDropsSaleText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.DropsSaleText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.DropsSaleTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.DropsSaleTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetEndGameText get text for endGame scene with variables
-func (tu *TextUsecase) GetEndGameText(score uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.EndGameText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetEndGameText(score uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.EndGameText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.EndGameTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.EndGameTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"score", score,
-	}
+    args := []interface{}{
+        "score", score,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetEndOfDayText get text for endOfDay scene with variables
-func (tu *TextUsecase) GetEndOfDayText(balance uint64, livesCount uint64, petalsCount uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.EndOfDayText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetEndOfDayText(balance uint64, livesCount uint64, petalsCount uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.EndOfDayText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.EndOfDayTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.EndOfDayTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"balance", balance,
-		"livesCount", livesCount,
-		"petalsCount", petalsCount,
-	}
+    args := []interface{}{
+        "balance", balance,
+        "livesCount", livesCount,
+        "petalsCount", petalsCount,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetFlyInfoText get text for flyInfo scene with variables
-func (tu *TextUsecase) GetFlyInfoText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.FlyInfoText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetFlyInfoText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.FlyInfoText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.FlyInfoTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.FlyInfoTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetFlySaleText get text for flySale scene with variables
-func (tu *TextUsecase) GetFlySaleText(flyCost uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.FlySaleText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetFlySaleText(flyCost uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.FlySaleText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.FlySaleTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.FlySaleTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"flyCost", flyCost,
-	}
+    args := []interface{}{
+        "flyCost", flyCost,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetGoodbyeText get text for goodbye scene with variables
-func (tu *TextUsecase) GetGoodbyeText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.GoodbyeText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetGoodbyeText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.GoodbyeText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.GoodbyeTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.GoodbyeTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetGreenhouseInfoText get text for greenhouseInfo scene with variables
-func (tu *TextUsecase) GetGreenhouseInfoText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.GreenhouseInfoText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetGreenhouseInfoText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.GreenhouseInfoText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.GreenhouseInfoTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.GreenhouseInfoTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetGreenhouseSaleText get text for greenhouseSale scene with variables
-func (tu *TextUsecase) GetGreenhouseSaleText(greenhouseCost uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.GreenhouseSaleText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetGreenhouseSaleText(greenhouseCost uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.GreenhouseSaleText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.GreenhouseSaleTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.GreenhouseSaleTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"greenhouseCost", greenhouseCost,
-	}
+    args := []interface{}{
+        "greenhouseCost", greenhouseCost,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetHealInfoText get text for healInfo scene with variables
-func (tu *TextUsecase) GetHealInfoText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.HealInfoText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetHealInfoText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.HealInfoText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.HealInfoTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.HealInfoTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetHealSaleText get text for healSale scene with variables
-func (tu *TextUsecase) GetHealSaleText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.HealSaleText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetHealSaleText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.HealSaleText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.HealSaleTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.HealSaleTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetHelloText get text for hello scene with variables
-func (tu *TextUsecase) GetHelloText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.HelloText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetHelloText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.HelloText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.HelloTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.HelloTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetIsStartText get text for is_start scene with variables
-func (tu *TextUsecase) GetIsStartText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.IsStartText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetIsStartText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.IsStartText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.IsStartTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.IsStartTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetNewDayText get text for newDay scene with variables
-func (tu *TextUsecase) GetNewDayText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.NewDayText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetNewDayText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.NewDayText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.NewDayTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.NewDayTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetRulesText get text for rules scene with variables
-func (tu *TextUsecase) GetRulesText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.RulesText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetRulesText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.RulesText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.RulesTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.RulesTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetShopText get text for shop scene with variables
-func (tu *TextUsecase) GetShopText(bugsCost uint64, flyCost uint64, greenhouseCost uint64, healCost uint64) (scene.Text, error) {
-	text, err := tu.store.GetText(consts.ShopText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetShopText(bugsCost uint64, flyCost uint64, greenhouseCost uint64, healCost uint64) (director.Text, error) {
+    text, err := tu.store.GetText(consts.ShopText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.ShopTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.ShopTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	args := []interface{}{
-		"bugsCost", bugsCost,
-		"flyCost", flyCost,
-		"greenhouseCost", greenhouseCost,
-		"healCost", healCost,
-	}
+    args := []interface{}{
+        "bugsCost", bugsCost,
+        "flyCost", flyCost,
+        "greenhouseCost", greenhouseCost,
+        "healCost", healCost,
+    }
 
-	res := scene.Text{
-		BaseText:     str.StringFormat(text, args...),
-		TextToSpeech: str.StringFormat(tts, args...),
-	}
+    res := director.Text{
+        BaseText:     str.StringFormat(text, args...),
+        TextToSpeech: str.StringFormat(tts, args...),
+    }
 
-	return res, nil
+    return res, nil
 }
 
 // GetStartRulesText get text for start_rules scene with variables
-func (tu *TextUsecase) GetStartRulesText() (scene.Text, error) {
-	text, err := tu.store.GetText(consts.StartRulesText)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+func (tu *TextUsecase) GetStartRulesText() (director.Text, error) {
+    text, err := tu.store.GetText(consts.StartRulesText)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	tts, err := tu.store.GetText(consts.StartRulesTTS)
-	if err != nil {
-		return scene.Text{}, nil
-	}
+    tts, err := tu.store.GetText(consts.StartRulesTTS)
+    if err != nil {
+        return director.Text{}, nil
+    }
 
-	res := scene.Text{
-		BaseText:     text,
-		TextToSpeech: tts,
-	}
+    res := director.Text{
+        BaseText:     text,
+        TextToSpeech: tts,
+    }
 
-	return res, nil
+    return res, nil
 }

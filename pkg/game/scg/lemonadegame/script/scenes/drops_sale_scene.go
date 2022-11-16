@@ -9,80 +9,81 @@
 package scenes
 
 import (
-	base_matchers "github.com/ThCompiler/go_game_constractor/director/matchers"
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/errors"
-	"github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/matchers"
+    "github.com/ThCompiler/go_game_constractor/director"
+    base_matchers "github.com/ThCompiler/go_game_constractor/director/scriptdirector/matchers"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/manager"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/errors"
+    "github.com/evrone/go-clean-template/pkg/game/scg/lemonadegame/script/matchers"
 )
 
 const (
-	// BackDropsSaleButtonText - text for button Back
-	BackDropsSaleButtonText = "Нисколько"
+    // BackDropsSaleButtonText - text for button Back
+    BackDropsSaleButtonText = "Нисколько"
 )
 
 // DropsSale scene
 type DropsSale struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *DropsSale) React(ctx *scene.Context) scene.Command {
-	// TODO Write the actions after DropsSale scene has been played
-	switch {
-	// Buttons select
-	case ctx.Request.NameMatched == BackDropsSaleButtonText && ctx.Request.WasButton:
+    // TODO Write the actions after DropsSale scene has been played
+    switch {
+    // Buttons select
+    case ctx.Request.NameMatched == BackDropsSaleButtonText && ctx.Request.WasButton:
 
-		// Matcher select
-	case ctx.Request.NameMatched == base_matchers.PositiveNumberMatchedString:
+        // Matcher select
+    case ctx.Request.NameMatched == base_matchers.PositiveNumberMatchedString:
 
-	case ctx.Request.NameMatched == base_matchers.PositiveNumberWordsMatchedString:
+    case ctx.Request.NameMatched == base_matchers.PositiveNumberInWordsMatchedString:
 
-	case ctx.Request.NameMatched == matchers.BackMatchedString:
+    case ctx.Request.NameMatched == matchers.BackMatchedString:
 
-	}
+    }
 
-	sc.NextScene = DropsSaleScene // TODO: manually set next scene after reaction
-	return scene.NoCommand
+    sc.NextScene = DropsSaleScene // TODO: manually set next scene after reaction
+    return scene.NoCommand
 }
 
 // Next function returning next scene
 func (sc *DropsSale) Next() scene.Scene {
-	switch sc.NextScene {
-	case ShopScene:
-		return &Shop{
-			TextManager: sc.TextManager,
-		}
-	case DropsInfoScene:
-		return &DropsInfo{
-			TextManager: sc.TextManager,
-		}
-	}
+    switch sc.NextScene {
+    case ShopScene:
+        return &Shop{
+            TextManager: sc.TextManager,
+        }
+    case DropsInfoScene:
+        return &DropsInfo{
+            TextManager: sc.TextManager,
+        }
+    }
 
-	return &DropsSale{
-		TextManager: sc.TextManager,
-	}
+    return &DropsSale{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *DropsSale) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 
-	// TODO Write some actions for get data for texts
+    // TODO Write some actions for get data for texts
 
-	text, _ := sc.TextManager.GetDropsSaleText()
-	return scene.Info{
-		Text: text,
-		ExpectedMessages: []scene.MessageMatcher{
-			base_matchers.PositiveNumberMatcher,
-			base_matchers.PositiveNumberInWordsMatcher,
-			matchers.BackMatcher,
-		},
-		Buttons: []scene.Button{
-			{
-				Title: BackDropsSaleButtonText,
-			},
-		},
-		Err: errors.NotUnderstandDropsSaleError,
-	}, true
+    text, _ := sc.TextManager.GetDropsSaleText()
+    return scene.Info{
+        Text: text,
+        ExpectedMessages: []scene.MessageMatcher{
+            base_matchers.PositiveNumberMatcher,
+            base_matchers.PositiveNumberInWordsMatcher,
+            matchers.BackMatcher,
+        },
+        Buttons: []director.Button{
+            {
+                Title: BackDropsSaleButtonText,
+            },
+        },
+        Err: errors.NotUnderstandDropsSaleError,
+    }, true
 }

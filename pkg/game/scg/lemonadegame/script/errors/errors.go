@@ -8,27 +8,27 @@
 
 package errors
 
-import "github.com/ThCompiler/go_game_constractor/director/scene"
+import "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
 
 // text errors
 var (
-	NotUnderstandError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Согласены ли вы поиграть?)"}
+    NotUnderstandError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Согласены ли вы поиграть?)"}
 
-	NotUnderstandFlySaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить защиту от ветра?"}
+    NotUnderstandFlySaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить защиту от ветра?"}
 
-	NotUnderstandEndOfDayError = scene.BaseTextError{Message: "Я не понимаю о чём вы"}
+    NotUnderstandEndOfDayError = scene.BaseTextError{Message: "Я не понимаю о чём вы"}
 
-	NotUnderstandEndGameError = scene.BaseTextError{Message: "Я не понимаю о чём вы"}
+    NotUnderstandEndGameError = scene.BaseTextError{Message: "Я не понимаю о чём вы"}
 
-	YouAboutWhatError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Что вы хотите купить? Или может хотите выйти?"}
+    YouAboutWhatError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Что вы хотите купить? Или может хотите выйти?"}
 
-	NotUnderstandDropsSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Либо я не знаю такого положительного числа. Либо вы хотели сказать что-то другое"}
+    NotUnderstandDropsSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Либо я не знаю такого положительного числа. Либо вы хотели сказать что-то другое"}
 
-	NotUnderstandBugsSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить защиту от жуков?"}
+    NotUnderstandBugsSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить защиту от жуков?"}
 
-	NotUnderstandHealSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить аптечку?"}
+    NotUnderstandHealSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить аптечку?"}
 
-	NotUnderstandApproveEndDayError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Вы точно хотите закончить день?"}
+    NotUnderstandApproveEndDayError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Вы точно хотите закончить день?"}
 
-	NotUnderstandGreenhouseSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить теплицу?"}
+    NotUnderstandGreenhouseSaleError = scene.BaseTextError{Message: "Я не понимаю о чём вы. Хотите ли вы купить теплицу?"}
 )

@@ -9,41 +9,42 @@
 package scenes
 
 import (
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
+    "github.com/ThCompiler/go_game_constractor/director"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
 )
 
 // Goodbye scene
 type Goodbye struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *Goodbye) React(_ *scene.Context) scene.Command {
-	return scene.FinishScene
+    return scene.FinishScene
 }
 
 // Next function returning next scene
 func (sc *Goodbye) Next() scene.Scene {
-	switch sc.NextScene {
-	case GoodbyeScene:
-		return &Goodbye{
-			TextManager: sc.TextManager,
-		}
-	}
+    switch sc.NextScene {
+    case GoodbyeScene:
+        return &Goodbye{
+            TextManager: sc.TextManager,
+        }
+    }
 
-	return &Goodbye{
-		TextManager: sc.TextManager,
-	}
+    return &Goodbye{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *Goodbye) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
-	text, _ := sc.TextManager.GetGoodbyeText()
-	return scene.Info{
-		Text:             text,
-		ExpectedMessages: []scene.MessageMatcher{},
-		Buttons:          []scene.Button{},
-	}, true
+    text, _ := sc.TextManager.GetGoodbyeText()
+    return scene.Info{
+        Text:             text,
+        ExpectedMessages: []scene.MessageMatcher{},
+        Buttons:          []director.Button{},
+    }, true
 }

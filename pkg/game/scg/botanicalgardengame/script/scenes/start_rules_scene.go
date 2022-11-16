@@ -9,36 +9,37 @@
 package scenes
 
 import (
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
+    "github.com/ThCompiler/go_game_constractor/director"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
 )
 
 // StartRules scene
 type StartRules struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *StartRules) React(_ *scene.Context) scene.Command {
-	sc.NextScene = IsStartScene
-	return scene.NoCommand
+    sc.NextScene = IsStartScene
+    return scene.NoCommand
 }
 
 // Next function returning next scene
 func (sc *StartRules) Next() scene.Scene {
-	return &IsStart{
-		TextManager: sc.TextManager,
-	}
+    return &IsStart{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *StartRules) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
 
-	text, _ := sc.TextManager.GetStartRulesText()
-	return scene.Info{
-		Text:             text,
-		ExpectedMessages: []scene.MessageMatcher{},
-		Buttons:          []scene.Button{},
-	}, false
+    text, _ := sc.TextManager.GetStartRulesText()
+    return scene.Info{
+        Text:             text,
+        ExpectedMessages: []scene.MessageMatcher{},
+        Buttons:          []director.Button{},
+    }, false
 }

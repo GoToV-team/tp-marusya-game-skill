@@ -8,67 +8,67 @@
 
 package manager
 
-import "github.com/ThCompiler/go_game_constractor/director/scene"
+import "github.com/ThCompiler/go_game_constractor/director"
 
 type TextManager interface {
 
-	// GetApproveEndDayText get text for approveEndDay scene with variables
-	GetApproveEndDayText() (scene.Text, error)
+    // GetApproveEndDayText get text for approveEndDay scene with variables
+    GetApproveEndDayText() (director.Text, error)
 
-	// GetBugsInfoText get text for bugsInfo scene with variables
-	GetBugsInfoText() (scene.Text, error)
+    // GetBugsInfoText get text for bugsInfo scene with variables
+    GetBugsInfoText() (director.Text, error)
 
-	// GetBugsSaleText get text for bugsSale scene with variables
-	GetBugsSaleText(bugsCost uint64) (scene.Text, error)
+    // GetBugsSaleText get text for bugsSale scene with variables
+    GetBugsSaleText(bugsCost uint64) (director.Text, error)
 
-	// GetDropsInfoText get text for dropsInfo scene with variables
-	GetDropsInfoText(dropsCount uint64) (scene.Text, error)
+    // GetDropsInfoText get text for dropsInfo scene with variables
+    GetDropsInfoText(dropsCount uint64) (director.Text, error)
 
-	// GetDropsSaleText get text for dropsSale scene with variables
-	GetDropsSaleText() (scene.Text, error)
+    // GetDropsSaleText get text for dropsSale scene with variables
+    GetDropsSaleText() (director.Text, error)
 
-	// GetEndGameText get text for endGame scene with variables
-	GetEndGameText(score uint64) (scene.Text, error)
+    // GetEndGameText get text for endGame scene with variables
+    GetEndGameText(score uint64) (director.Text, error)
 
-	// GetEndOfDayText get text for endOfDay scene with variables
-	GetEndOfDayText(balance uint64, livesCount uint64, petalsCount uint64) (scene.Text, error)
+    // GetEndOfDayText get text for endOfDay scene with variables
+    GetEndOfDayText(balance uint64, livesCount uint64, petalsCount uint64) (director.Text, error)
 
-	// GetFlyInfoText get text for flyInfo scene with variables
-	GetFlyInfoText() (scene.Text, error)
+    // GetFlyInfoText get text for flyInfo scene with variables
+    GetFlyInfoText() (director.Text, error)
 
-	// GetFlySaleText get text for flySale scene with variables
-	GetFlySaleText(flyCost uint64) (scene.Text, error)
+    // GetFlySaleText get text for flySale scene with variables
+    GetFlySaleText(flyCost uint64) (director.Text, error)
 
-	// GetGoodbyeText get text for goodbye scene with variables
-	GetGoodbyeText() (scene.Text, error)
+    // GetGoodbyeText get text for goodbye scene with variables
+    GetGoodbyeText() (director.Text, error)
 
-	// GetGreenhouseInfoText get text for greenhouseInfo scene with variables
-	GetGreenhouseInfoText() (scene.Text, error)
+    // GetGreenhouseInfoText get text for greenhouseInfo scene with variables
+    GetGreenhouseInfoText() (director.Text, error)
 
-	// GetGreenhouseSaleText get text for greenhouseSale scene with variables
-	GetGreenhouseSaleText(greenhouseCost uint64) (scene.Text, error)
+    // GetGreenhouseSaleText get text for greenhouseSale scene with variables
+    GetGreenhouseSaleText(greenhouseCost uint64) (director.Text, error)
 
-	// GetHealInfoText get text for healInfo scene with variables
-	GetHealInfoText() (scene.Text, error)
+    // GetHealInfoText get text for healInfo scene with variables
+    GetHealInfoText() (director.Text, error)
 
-	// GetHealSaleText get text for healSale scene with variables
-	GetHealSaleText() (scene.Text, error)
+    // GetHealSaleText get text for healSale scene with variables
+    GetHealSaleText() (director.Text, error)
 
-	// GetHelloText get text for hello scene with variables
-	GetHelloText() (scene.Text, error)
+    // GetHelloText get text for hello scene with variables
+    GetHelloText() (director.Text, error)
 
-	// GetIsStartText get text for is_start scene with variables
-	GetIsStartText() (scene.Text, error)
+    // GetIsStartText get text for is_start scene with variables
+    GetIsStartText() (director.Text, error)
 
-	// GetNewDayText get text for newDay scene with variables
-	GetNewDayText() (scene.Text, error)
+    // GetNewDayText get text for newDay scene with variables
+    GetNewDayText() (director.Text, error)
 
-	// GetRulesText get text for rules scene with variables
-	GetRulesText() (scene.Text, error)
+    // GetRulesText get text for rules scene with variables
+    GetRulesText() (director.Text, error)
 
-	// GetShopText get text for shop scene with variables
-	GetShopText(bugsCost uint64, flyCost uint64, greenhouseCost uint64, healCost uint64) (scene.Text, error)
+    // GetShopText get text for shop scene with variables
+    GetShopText(bugsCost uint64, flyCost uint64, greenhouseCost uint64, healCost uint64) (director.Text, error)
 
-	// GetStartRulesText get text for start_rules scene with variables
-	GetStartRulesText() (scene.Text, error)
+    // GetStartRulesText get text for start_rules scene with variables
+    GetStartRulesText() (director.Text, error)
 }

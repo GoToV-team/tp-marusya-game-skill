@@ -9,78 +9,79 @@
 package scenes
 
 import (
-	base_matchers "github.com/ThCompiler/go_game_constractor/director/matchers"
-	"github.com/ThCompiler/go_game_constractor/director/scene"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
-	"github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/script/errors"
+    "github.com/ThCompiler/go_game_constractor/director"
+    base_matchers "github.com/ThCompiler/go_game_constractor/director/scriptdirector/matchers"
+    "github.com/ThCompiler/go_game_constractor/director/scriptdirector/scene"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/manager"
+    "github.com/evrone/go-clean-template/pkg/game/scg/botanicalgardengame/script/errors"
 )
 
 const (
-	// AgreeEndOfDayButtonText - text for button Agree
-	AgreeEndOfDayButtonText = "Да"
+    // AgreeEndOfDayButtonText - text for button Agree
+    AgreeEndOfDayButtonText = "Да"
 )
 
 // EndOfDay scene
 type EndOfDay struct {
-	TextManager manager.TextManager
-	NextScene   SceneName
+    TextManager manager.TextManager
+    NextScene   SceneName
 }
 
 // React function of actions after scene has been played
 func (sc *EndOfDay) React(ctx *scene.Context) scene.Command {
-	switch {
-	// Buttons select
-	case ctx.Request.NameMatched == AgreeEndOfDayButtonText && ctx.Request.WasButton:
-		sc.NextScene = NewDayScene
-		// Matcher select
-	case ctx.Request.NameMatched == base_matchers.AgreeMatchedString:
-		sc.NextScene = NewDayScene
-	}
+    switch {
+    // Buttons select
+    case ctx.Request.NameMatched == AgreeEndOfDayButtonText && ctx.Request.WasButton:
+        sc.NextScene = NewDayScene
+        // Matcher select
+    case ctx.Request.NameMatched == base_matchers.AgreeMatchedString:
+        sc.NextScene = NewDayScene
+    }
 
-	return scene.NoCommand
+    return scene.NoCommand
 }
 
 // Next function returning next scene
 func (sc *EndOfDay) Next() scene.Scene {
-	switch sc.NextScene {
-	case NewDayScene:
-		return &NewDay{
-			TextManager: sc.TextManager,
-		}
-	case EndGameScene:
-		return &EndGame{
-			TextManager: sc.TextManager,
-		}
-	}
+    switch sc.NextScene {
+    case NewDayScene:
+        return &NewDay{
+            TextManager: sc.TextManager,
+        }
+    case EndGameScene:
+        return &EndGame{
+            TextManager: sc.TextManager,
+        }
+    }
 
-	return &EndOfDay{
-		TextManager: sc.TextManager,
-	}
+    return &EndOfDay{
+        TextManager: sc.TextManager,
+    }
 }
 
 // GetSceneInfo function returning info about scene
 func (sc *EndOfDay) GetSceneInfo(_ *scene.Context) (scene.Info, bool) {
-	var (
-		balance     uint64
-		livesCount  uint64
-		petalsCount uint64
-	)
+    var (
+        balance     uint64
+        livesCount  uint64
+        petalsCount uint64
+    )
 
-	text, _ := sc.TextManager.GetEndOfDayText(
-		balance,
-		livesCount,
-		petalsCount,
-	)
-	return scene.Info{
-		Text: text,
-		ExpectedMessages: []scene.MessageMatcher{
-			base_matchers.Agree,
-		},
-		Buttons: []scene.Button{
-			{
-				Title: AgreeEndOfDayButtonText,
-			},
-		},
-		Err: errors.NotUnderstandEndOfDayError,
-	}, true
+    text, _ := sc.TextManager.GetEndOfDayText(
+        balance,
+        livesCount,
+        petalsCount,
+    )
+    return scene.Info{
+        Text: text,
+        ExpectedMessages: []scene.MessageMatcher{
+            base_matchers.Agree,
+        },
+        Buttons: []director.Button{
+            {
+                Title: AgreeEndOfDayButtonText,
+            },
+        },
+        Err: errors.NotUnderstandEndOfDayError,
+    }, true
 }
